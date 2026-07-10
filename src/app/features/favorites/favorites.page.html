@@ -1,0 +1,70 @@
+<app-screen-header title="Favorites" [showPokeball]="true" />
+
+<ion-content id="main-content" role="main">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh favorites"
+      refreshingSpinner="crescent"
+      refreshingText="Refreshing..."
+    ></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="page-container">
+    @if (loading()) {
+      <div class="skeleton-grid" aria-hidden="true">
+        @for (placeholder of [1, 2, 3, 4]; track placeholder) {
+          <div class="skeleton-card">
+            <div class="skeleton-sprite"></div>
+            <div class="skeleton-line skeleton-line--short"></div>
+            <div class="skeleton-line"></div>
+          </div>
+        }
+      </div>
+    } @else if (!error() && pokemon().length === 0) {
+      <section class="favorites-empty fade-up-enter" aria-live="polite">
+        <div class="favorites-empty__visual" aria-hidden="true">
+          <div class="favorites-empty__glow"></div>
+          <ion-icon name="heart-outline"></ion-icon>
+        </div>
+        <h2 class="favorites-empty__title">No favorites yet</h2>
+        <p class="favorites-empty__message">
+          Tap the heart on any Pokémon card to save it here and build your personal collection.
+        </p>
+        <ion-button class="favorites-empty__cta" (click)="goHome()">
+          Explore Pokémon
+        </ion-button>
+      </section>
+    } @else if (!error()) {
+      <div class="favorites-summary">
+        <p class="favorites-count">
+          {{ favoriteCount() }} favorite{{ favoriteCount() === 1 ? '' : 's' }}
+        </p>
+        <p class="favorites-hint">Tap a card to view details · Tap ♥ to remove</p>
+      </div>
+
+      <div class="pokemon-grid">
+        @for (item of pokemon(); track item.id; let i = $index) {
+          <div
+            class="grid-card-wrap"
+            [class.grid-card-wrap--removing]="removingIds().has(item.id)"
+            [style.--enter-delay]="i * 40 + 'ms'"
+          >
+            <app-pokemon-card
+              [pokemon]="item"
+              (favoriteToggled)="onFavoriteToggled($event)"
+            ></app-pokemon-card>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ion-content>
+
+@if (error()) {
+  <app-error-retry
+    presentation="modal"
+    (retry)="retry()"
+    (dismiss)="dismissError()"
+  ></app-error-retry>
+}

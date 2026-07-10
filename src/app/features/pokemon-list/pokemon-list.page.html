@@ -1,0 +1,221 @@
+<app-screen-header variant="brand">
+  <ion-toolbar header-toolbar class="search-toolbar">
+    <ion-searchbar
+      class="home-searchbar"
+      placeholder="Search Pokémon by name or ID"
+      showClearButton="focus"
+      [debounce]="300"
+      [value]="searchQuery()"
+      (ionInput)="onSearchChange($event)"
+      (ionClear)="onSearchClear()"
+    ></ion-searchbar>
+  </ion-toolbar>
+</app-screen-header>
+
+<ion-content id="main-content" role="main">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="crescent"
+      refreshingText="Refreshing..."
+    ></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="page-container">
+    <div class="filters-header">
+      <p class="section-label">Multi-Select Type</p>
+      @if (hasActiveFilters()) {
+        <button
+          type="button"
+          class="clear-all-btn"
+          [class.clear-all-btn--clearing]="clearingFilters()"
+          [attr.aria-label]="'Clear all ' + activeFilterCount() + ' filters'"
+          (click)="clearAllFilters()"
+        >
+          <ion-icon name="close-circle-outline" aria-hidden="true"></ion-icon>
+          <span>Clear all</span>
+          <span class="clear-all-btn__badge">{{ activeFilterCount() }}</span>
+        </button>
+      }
+    </div>
+
+    <div
+      class="type-filters"
+      tabindex="0"
+      role="region"
+      aria-label="Pokémon type filters"
+    >
+      @for (type of availableTypes; track type) {
+        <ion-chip
+          class="type-filter-chip"
+          [class.type-filter-chip--active]="isTypeSelected(type)"
+          [style.--background]="filterChipBackground(type)"
+          [style.--color]="filterChipTextColor(type)"
+          [style.border]="filterChipBorder(type)"
+          [attr.aria-pressed]="isTypeSelected(type)"
+          (click)="toggleType(type)"
+        >
+          {{ typeLabel(type) }}
+        </ion-chip>
+      }
+    </div>
+
+    @if (selectedTypes().length > 0) {
+      <div class="active-filters">
+        @for (type of selectedTypes(); track type) {
+          <ion-chip class="active-filter-chip" (click)="removeType(type)">
+            {{ typeLabel(type) }}
+            <ion-icon name="close-circle" aria-hidden="true"></ion-icon>
+          </ion-chip>
+        }
+      </div>
+    }
+
+    @if (!loading() && resultsLabel()) {
+      <p class="results-meta" aria-live="polite">{{ resultsLabel() }}</p>
+    }
+
+    @if (loading()) {
+      <div class="skeleton-grid" aria-hidden="true">
+        @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
+          <div class="skeleton-card">
+            <div class="skeleton-sprite"></div>
+            <div class="skeleton-line skeleton-line--short"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-chips">
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="pokemon-grid">
+        @for (item of pokemon(); track item.id; let i = $index) {
+          <div class="grid-card-wrap" [style.--enter-delay]="(i % pageSize) * 35 + 'ms'">
+            <app-pokemon-card [pokemon]="item"></app-pokemon-card>
+          </div>
+        }
+      </div>
+
+      @if (pokemon().length === 0) {
+        <section class="home-empty-state fade-up-enter" aria-live="polite">
+          <div class="home-empty-state__visual" aria-hidden="true">
+            <div class="home-empty-state__glow"></div>
+            <img
+              class="home-empty-state__pokeball"
+              src="assets/icon/pokeball.png"
+              alt=""
+              width="72"
+              height="72"
+            />
+          </div>
+
+          <h2 class="home-empty-state__title">
+            @if (hasActiveFilters()) {
+              No matches found
+            } @else {
+              No Pokémon yet
+            }
+          </h2>
+
+          <p class="home-empty-state__message">
+            @if (hasActiveFilters()) {
+              Try a different search term, remove a filter, or explore a suggested type below.
+            } @else {
+              Pull down to refresh or browse Pokémon by type.
+            }
+          </p>
+
+          @if (hasActiveFilters()) {
+            <div class="home-empty-state__active">
+              <span class="home-empty-state__label">Active filters</span>
+              <div class="home-empty-state__chips">
+                @if (searchQuery().trim()) {
+                  <button
+                    type="button"
+                    class="home-empty-chip home-empty-chip--search"
+                    (click)="onSearchClear()"
+                  >
+                    <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+                    <span>"{{ searchQuery().trim() }}"</span>
+                    <ion-icon name="close-circle" aria-hidden="true"></ion-icon>
+                  </button>
+                }
+                @for (type of selectedTypes(); track type) {
+                  <button
+                    type="button"
+                    class="home-empty-chip"
+                    [style.--chip-color]="filterChipTextColor(type)"
+                    (click)="removeType(type)"
+                  >
+                    <span>{{ typeLabel(type) }}</span>
+                    <ion-icon name="close-circle" aria-hidden="true"></ion-icon>
+                  </button>
+                }
+              </div>
+            </div>
+
+            @if (suggestedTypes().length > 0) {
+              <div class="home-empty-state__suggestions">
+                <span class="home-empty-state__label">Try these types</span>
+                <div class="home-empty-state__chips">
+                  @for (type of suggestedTypes(); track type; let i = $index) {
+                    <button
+                      type="button"
+                      class="home-empty-chip home-empty-chip--suggestion chip-pop-enter"
+                      [style.--chip-color]="filterChipTextColor(type)"
+                      [style.--enter-delay]="i * 60 + 'ms'"
+                      (click)="applySuggestedType(type)"
+                    >
+                      {{ typeLabel(type) }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="home-empty-state__actions">
+              <ion-button class="home-empty-state__reset" (click)="clearAllFilters()">
+                <ion-icon slot="start" name="refresh-outline" aria-hidden="true"></ion-icon>
+                Reset filters
+              </ion-button>
+            </div>
+          } @else {
+            <div class="home-empty-state__actions">
+              <ion-button (click)="openBrowse()">
+                Browse by type
+              </ion-button>
+            </div>
+          }
+        </section>
+      }
+
+      @if (loadingMore()) {
+        <div class="loading-more">
+          <ion-spinner name="crescent" color="primary"></ion-spinner>
+          <span>Loading more...</span>
+        </div>
+      }
+    }
+
+    <ion-infinite-scroll
+      [disabled]="!hasMore() || loading() || error()"
+      (ionInfinite)="onInfiniteScroll($event)"
+    >
+      <ion-infinite-scroll-content
+        loadingSpinner="crescent"
+        loadingText="Loading more Pokémon..."
+      ></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+</ion-content>
+
+@if (error()) {
+  <app-error-retry
+    presentation="modal"
+    (retry)="retry()"
+    (dismiss)="dismissError()"
+  ></app-error-retry>
+}

@@ -1,0 +1,31 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    groups:
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - '@angular-eslint/*'
+      ionic-capacitor:
+        patterns:
+          - '@ionic/*'
+          - '@capacitor/*'
+      dev-tooling:
+        patterns:
+          - '@playwright/*'
+          - '@axe-core/*'
+          - 'eslint*'
+          - '@typescript-eslint/*'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday

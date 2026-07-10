@@ -1,0 +1,41 @@
+:root {
+  --ion-color-primary: var(--jublia-color-primary);
+  --ion-color-primary-rgb: var(--jublia-color-primary-rgb);
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #ca322f;
+  --ion-color-primary-tint: #e84d49;
+
+  --ion-color-secondary: var(--jublia-color-secondary);
+  --ion-color-secondary-rgb: 0, 184, 217;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #00a2bf;
+  --ion-color-secondary-tint: #1abfdd;
+
+  --ion-color-tertiary: var(--jublia-color-background);
+  --ion-color-tertiary-rgb: 245, 245, 247;
+  --ion-color-tertiary-contrast: var(--jublia-color-text);
+  --ion-color-tertiary-contrast-rgb: 26, 26, 26;
+  --ion-color-tertiary-shade: #d8d8d9;
+  --ion-color-tertiary-tint: #f6f6f8;
+
+  --ion-background-color: var(--jublia-color-background);
+  --ion-background-color-rgb: 245, 245, 247;
+  --ion-text-color: var(--jublia-color-text);
+  --ion-text-color-rgb: 26, 26, 26;
+}
+
+.ion-palette-dark {
+  --ion-color-tertiary: var(--jublia-color-background);
+  --ion-color-tertiary-rgb: 15, 15, 18;
+  --ion-color-tertiary-contrast: var(--jublia-color-text);
+  --ion-color-tertiary-contrast-rgb: 245, 245, 247;
+  --ion-color-tertiary-shade: #0d0d10;
+  --ion-color-tertiary-tint: #27272a;
+
+  --ion-background-color: var(--jublia-color-background);
+  --ion-background-color-rgb: 15, 15, 18;
+  --ion-text-color: var(--jublia-color-text);
+  --ion-text-color-rgb: 245, 245, 247;
+}

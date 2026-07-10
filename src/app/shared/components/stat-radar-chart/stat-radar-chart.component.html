@@ -1,0 +1,40 @@
+<div class="radar-wrap" [class.compact]="compact" [style.--radar-color]="color">
+  <svg
+    [attr.viewBox]="'0 0 ' + chartSize + ' ' + chartSize"
+    role="img"
+    aria-labelledby="radar-chart-title"
+  >
+    <title id="radar-chart-title">{{ chartAriaLabel }}</title>
+    @for (level of gridLevels(); track level) {
+      <polygon
+        class="radar-grid"
+        [attr.points]="gridPolygonPoints(level)"
+      ></polygon>
+    }
+
+    @for (stat of orderedStats; track stat.name; let index = $index) {
+      <line
+        class="radar-axis"
+        [attr.x1]="center"
+        [attr.y1]="center"
+        [attr.x2]="axisCoords(index).x"
+        [attr.y2]="axisCoords(index).y"
+      ></line>
+    }
+
+    <polygon class="radar-fill" [attr.points]="dataPolygon()"></polygon>
+    <polygon class="radar-stroke" [attr.points]="dataPolygon()"></polygon>
+
+    @for (stat of orderedStats; track stat.name; let index = $index) {
+      <text
+        class="radar-label"
+        [attr.x]="labelPosition(index).x"
+        [attr.y]="labelPosition(index).y"
+        text-anchor="middle"
+        dominant-baseline="middle"
+      >
+        {{ shortLabel(stat.name) }}
+      </text>
+    }
+  </svg>
+</div>

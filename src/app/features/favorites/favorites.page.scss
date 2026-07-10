@@ -1,0 +1,101 @@
+.favorites-summary {
+  margin-bottom: 12px;
+}
+
+.favorites-count {
+  margin: 0 0 4px;
+  font-size: var(--jublia-font-size-base);
+  font-weight: var(--jublia-font-weight-bold);
+  color: #1a1a1a;
+}
+
+.favorites-hint {
+  margin: 0 0 4px;
+  font-size: var(--jublia-font-size-xs);
+  color: var(--jublia-color-text-muted);
+}
+
+.pokemon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.grid-card-wrap {
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+.grid-card-wrap--removing {
+  opacity: 0;
+  transform: scale(0.88) translateY(8px);
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .pokemon-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.favorites-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px 48px;
+}
+
+.favorites-empty__visual {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 8px;
+}
+
+.favorites-empty__glow {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--jublia-color-primary) 22%, transparent) 0%,
+    transparent 72%
+  );
+  animation: empty-glow 2.4s ease-in-out infinite;
+}
+
+.favorites-empty__visual ion-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 72px;
+  color: var(--jublia-color-primary);
+  animation: heart-float 2.4s ease-in-out infinite;
+}
+
+.favorites-empty__title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.favorites-empty__message {
+  margin: 0 0 20px;
+  max-width: 280px;
+  font-size: var(--jublia-font-size-sm);
+  line-height: 1.5;
+  color: var(--jublia-color-text-muted);
+}
+
+.favorites-empty__cta {
+  --border-radius: 9999px;
+  font-weight: var(--jublia-font-weight-semibold);
+}
+
+.favorites-empty__cta:active {
+  transform: scale(0.98);
+}

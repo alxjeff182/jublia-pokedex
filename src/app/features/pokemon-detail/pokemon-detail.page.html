@@ -1,0 +1,250 @@
+<app-screen-header
+  variant="overlay"
+  [showBack]="true"
+  rightIcon="share-outline"
+  rightAriaLabel="Share Pokémon"
+  (backClick)="goBack()"
+  (rightClick)="sharePokemon()"
+/>
+
+<ion-content id="main-content" role="main" [fullscreen]="true">
+  @if (loading()) {
+    <div class="loading-wrap" aria-live="polite">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <span class="sr-only">Loading Pokémon details</span>
+    </div>
+  } @else if (pokemon(); as detail) {
+    <div class="detail-page">
+      <section class="hero-section">
+        <div class="sprite-stage" [style.--glow-color]="headerColor">
+          <img
+            class="sprite-image"
+            [src]="sprite || 'assets/icon/favicon.png'"
+            [alt]="displayName"
+          />
+        </div>
+
+        <div class="identity">
+          <span class="hero-id">{{ displayId }}</span>
+          <h1 class="hero-name">{{ displayName }}</h1>
+          <div class="type-row">
+            @for (type of detail.types; track type.type.name) {
+              <app-type-chip [type]="type.type.name"></app-type-chip>
+            }
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button
+            type="button"
+            class="favorite-pill"
+            [class.is-active]="isFavorite()"
+            [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
+            (click)="toggleFavorite()"
+          >
+            <ion-icon name="heart" class="favorite-heart" aria-hidden="true"></ion-icon>
+            <span>Favorite</span>
+          </button>
+
+          <div class="physical-stats">
+            <div class="physical-stat">
+              <span>Height</span>
+              <strong>{{ detail.height / 10 }} m</strong>
+            </div>
+            <div class="physical-stat">
+              <span>Weight</span>
+              <strong>{{ detail.weight / 10 }} kg</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-card">
+        <div class="detail-section">
+          <button
+            type="button"
+            class="menu-row"
+            [attr.aria-expanded]="abilitiesOpen()"
+            (click)="toggleAbilities()"
+          >
+            <span class="menu-label">Abilities</span>
+            <ion-icon name="chevron-forward" class="menu-chevron" aria-hidden="true"></ion-icon>
+          </button>
+          @if (abilitiesOpen()) {
+            <div class="menu-panel">
+              @for (ability of detail.abilities; track ability.ability.name) {
+                <div class="menu-panel-row">
+                  <span class="menu-panel-title">
+                    {{ formatAbilityName(ability.ability.name) }}
+                  </span>
+                  @if (ability.is_hidden) {
+                    <span class="menu-panel-note">Hidden</span>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="detail-section">
+          <h2 class="section-title">Base Stats</h2>
+          <div class="stats-split">
+            <div class="stats-bars">
+              @for (stat of detail.stats; track stat.stat.name) {
+                <app-stat-bar
+                  [name]="stat.stat.name"
+                  [value]="stat.base_stat"
+                  [compact]="true"
+                  [mutedValue]="true"
+                ></app-stat-bar>
+              }
+            </div>
+            @if (radarChartComponent(); as chart) {
+              <ng-container
+                *ngComponentOutlet="
+                  chart;
+                  inputs: {
+                    stats: radarStats(detail),
+                    color: '#e53935',
+                    compact: true
+                  }
+                "
+              ></ng-container>
+            }
+          </div>
+        </div>
+
+        @if (evolution().length > 0) {
+          <div class="detail-section">
+            <h2 class="section-title">Evolution Chain</h2>
+            <div class="evolution-row">
+              @for (node of evolution(); track node.id; let last = $last) {
+                <button
+                  class="evolution-circle"
+                  type="button"
+                  [style.--evo-color]="evolutionColor(node)"
+                  (click)="openPokemon(node.id)"
+                >
+                  <span class="evolution-glow"></span>
+                  <img
+                    [src]="node.sprite || 'assets/icon/favicon.png'"
+                    [alt]="node.name"
+                  />
+                </button>
+                @if (!last) {
+                  <ion-icon class="evolution-arrow" name="arrow-forward" aria-hidden="true"></ion-icon>
+                }
+              }
+            </div>
+          </div>
+        }
+
+        <div class="detail-section detail-section--last">
+          <button type="button" class="menu-row" (click)="openMovesModal()">
+            <span class="menu-label">Moves</span>
+            <span class="menu-meta">{{ moveEntries().length }} moves</span>
+            <ion-icon name="chevron-forward" class="menu-chevron" aria-hidden="true"></ion-icon>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <ion-modal
+      class="moves-modal"
+      [isOpen]="movesModalOpen()"
+      [initialBreakpoint]="0.9"
+      [breakpoints]="[0, 0.55, 0.9]"
+      (didDismiss)="closeMovesModal()"
+    >
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>{{ displayName }} Moves</ion-title>
+            <ion-buttons slot="end">
+              <ion-button fill="clear" aria-label="Close moves" (click)="closeMovesModal()">
+                <ion-icon slot="icon-only" name="close-outline" aria-hidden="true"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-searchbar
+              class="moves-search"
+              placeholder="Search moves..."
+              [debounce]="200"
+              [value]="moveSearch()"
+              (ionInput)="onMoveSearch($event)"
+            ></ion-searchbar>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="moves-modal-content">
+          <div class="move-filters">
+            @for (filter of moveFilterOptions; track filter.id) {
+              <ion-chip
+                [class.active]="moveFilter() === filter.id"
+                (click)="setMoveFilter(filter.id)"
+              >
+                {{ filter.label }}
+              </ion-chip>
+            }
+          </div>
+
+          <p class="moves-result-count">
+            {{ filteredMoves().length }} of {{ moveEntries().length }} moves
+          </p>
+
+          @if (filteredMoves().length === 0) {
+            <div class="moves-empty">
+              <ion-icon name="search-outline" color="medium" aria-hidden="true"></ion-icon>
+              <p>No moves match your search.</p>
+            </div>
+          } @else {
+            <ion-list class="moves-list" lines="full">
+              @for (move of filteredMoves(); track move.name) {
+                <ion-item
+                  button
+                  detail="false"
+                  [class.expanded]="selectedMove() === move.name"
+                  (click)="toggleMoveDetail(move.name)"
+                >
+                  <ion-label>
+                    <h3>{{ move.label }}</h3>
+                    <p>{{ moveLearnSummary(move) }}</p>
+                  </ion-label>
+                  <ion-icon
+                    slot="end"
+                    class="move-expand-icon"
+                    [name]="selectedMove() === move.name ? 'chevron-up' : 'chevron-down'"
+                    color="medium"
+                    aria-hidden="true"
+                  ></ion-icon>
+                </ion-item>
+
+                @if (selectedMove() === move.name) {
+                  <div class="move-detail-panel">
+                    @for (method of move.learnMethods; track method) {
+                      <span class="move-method-tag">
+                        {{ formatLearnMethod(method) }}
+                        @if (method === 'level-up' && move.minLevel !== null) {
+                          · Lv. {{ move.minLevel }}
+                        }
+                      </span>
+                    }
+                  </div>
+                }
+              }
+            </ion-list>
+          }
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  }
+</ion-content>
+
+@if (error()) {
+  <app-error-retry
+    presentation="modal"
+    (retry)="retry()"
+    (dismiss)="dismissError()"
+  ></app-error-retry>
+}

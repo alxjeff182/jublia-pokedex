@@ -1,0 +1,36 @@
+---
+description: JUBLIA Dex Angular + Ionic conventions
+globs: src/**/*.ts,src/**/*.html,src/**/*.scss
+alwaysApply: true
+---
+
+# JUBLIA Dex Stack Rules
+
+- Use **standalone components** only. Do not add new NgModules.
+- Prefer **Ionic components** (`ion-*`) over custom HTML for UI primitives.
+- **Read official docs before UI changes** — see `docs/development-guidelines.md` and `.cursor/rules/official-docs.mdc`.
+- Keep styling aligned with design tokens in `src/theme/design-tokens.scss` and Ionic theme in `src/theme/variables.scss`.
+- Use **Angular signals** for component-local reactive state.
+- All PokéAPI access must go through `src/app/core/services/*`.
+- Shared UI belongs in `src/app/shared/components/*`.
+- Feature screens belong in `src/app/features/*` with one folder per screen.
+- Use `@ionic/angular/standalone` imports, not the legacy module barrel.
+- Style Ionic components via **documented APIs and CSS variables**, not ad-hoc global overrides.
+
+## Examples
+
+```typescript
+// BAD - direct HTTP in a page
+this.http.get('https://pokeapi.co/api/v2/pokemon/1')
+
+// GOOD - service abstraction
+this.pokemonService.getPokemonDetail(1)
+```
+
+```html
+<!-- BAD -->
+<div class="custom-button">Retry</div>
+
+<!-- GOOD -->
+<ion-button color="primary">Retry</ion-button>
+```

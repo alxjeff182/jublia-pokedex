@@ -1,0 +1,147 @@
+:host {
+  display: block;
+}
+
+ion-card.pokemon-card {
+  --background: var(--jublia-color-surface);
+  --color: var(--jublia-color-text);
+  position: relative;
+  margin: 0;
+  border-radius: var(--jublia-card-radius);
+  border: 1px solid var(--jublia-color-border);
+  box-shadow: var(--jublia-shadow-soft);
+  background: var(--jublia-color-surface);
+  overflow: hidden;
+}
+
+.card-nav {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+ion-card.pokemon-card:active .card-nav {
+  transform: scale(0.97);
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  --padding-start: 4px;
+  --padding-end: 4px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  margin: 0;
+  height: 32px;
+}
+
+.favorite-btn ion-icon {
+  font-size: 1.35rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.favorite-btn--pop ion-icon {
+  animation: heart-pop 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes heart-pop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.35);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.image-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px 8px;
+  min-height: 168px;
+  background: var(--jublia-color-surface);
+  overflow: hidden;
+}
+
+.type-aura {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.type-aura--outer {
+  width: 92%;
+  max-width: 188px;
+  aspect-ratio: 1;
+  filter: blur(6px);
+  opacity: 0.95;
+}
+
+.type-aura--inner {
+  width: 72%;
+  max-width: 148px;
+  aspect-ratio: 1;
+  filter: blur(1.5px);
+}
+
+.pokemon-sprite {
+  position: relative;
+  z-index: 1;
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+ion-card.pokemon-card:active .pokemon-sprite {
+  transform: scale(1.05);
+}
+
+.card-nav:active .pokemon-sprite {
+  transform: scale(1.05);
+}
+
+.card-body {
+  padding: 4px 16px 16px;
+  text-align: left;
+}
+
+.pokemon-id {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--jublia-color-text-muted);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-bottom: 4px;
+}
+
+.pokemon-name {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--jublia-color-text);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.type-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

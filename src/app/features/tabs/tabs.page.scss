@@ -1,0 +1,12 @@
+ion-tab-bar {
+  --background: var(--jublia-color-surface);
+  border-top: 1px solid var(--jublia-color-border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-tab-button {
+  --color: var(--jublia-color-text-muted);
+  --color-selected: var(--jublia-color-primary);
+  font-size: var(--jublia-font-size-xs);
+  font-weight: var(--jublia-font-weight-medium);
+}

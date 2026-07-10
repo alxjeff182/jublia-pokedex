@@ -1,0 +1,50 @@
+.stat-row {
+  margin-bottom: 12px;
+}
+
+.stat-row.compact {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.stat-row.compact.muted-value .stat-value {
+  color: var(--jublia-color-text-muted);
+  font-weight: var(--jublia-font-weight-semibold);
+}
+
+.stat-row.compact ion-progress-bar {
+  clear: none;
+  height: 6px;
+  --background: #f0e0e0;
+  border-radius: 999px;
+}
+
+.stat-row.highlight .stat-value {
+  color: #c62828;
+  font-weight: var(--jublia-font-weight-bold);
+}
+
+.stat-name {
+  display: inline-block;
+  width: 110px;
+  font-size: var(--jublia-font-size-sm);
+  font-weight: var(--jublia-font-weight-semibold);
+  text-transform: capitalize;
+}
+
+.stat-value {
+  float: right;
+  font-size: var(--jublia-font-size-sm);
+  font-weight: var(--jublia-font-weight-semibold);
+  margin-bottom: 6px;
+}
+
+ion-progress-bar {
+  clear: both;
+  height: 8px;
+  border-radius: var(--jublia-chip-radius);
+  --background: var(--jublia-color-border);
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">jublia-dex-scaffold</string>
+    <string name="title_activity_main">jublia-dex-scaffold</string>
+    <string name="package_name">com.jublia.dex</string>
+    <string name="custom_url_scheme">com.jublia.dex</string>
+</resources>

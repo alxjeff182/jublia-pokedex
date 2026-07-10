@@ -1,0 +1,170 @@
+<app-screen-header
+  title="Compare Pokémon"
+  backHref="/tabs/settings"
+  [showPokeball]="true"
+>
+  <ion-toolbar header-toolbar>
+    <ion-searchbar
+      placeholder="Search Pokémon to compare..."
+      [debounce]="300"
+      (ionInput)="onSearch($event)"
+    ></ion-searchbar>
+  </ion-toolbar>
+</app-screen-header>
+
+<ion-content id="main-content" role="main">
+  <div class="page-container">
+    @if (searching()) {
+      <div class="loading-wrap" aria-live="polite">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <span class="sr-only">Searching Pokémon</span>
+      </div>
+    }
+
+    @if (searchResults().length > 0) {
+      <ion-list class="search-results">
+        @for (item of searchResults(); track item.id) {
+          <ion-item>
+            <ion-label>{{ formatPokemonName(item.name) }}</ion-label>
+            <ion-button slot="end" fill="outline" size="small" (click)="selectPokemon('left', item.id)">
+              Left
+            </ion-button>
+            <ion-button slot="end" fill="outline" size="small" (click)="selectPokemon('right', item.id)">
+              Right
+            </ion-button>
+          </ion-item>
+        }
+      </ion-list>
+    }
+
+    <div class="compare-layout">
+      <section class="compare-card">
+        <div class="compare-header">
+          <h3>Left</h3>
+          @if (leftPokemon()) {
+            <ion-button fill="clear" size="small" color="medium" (click)="clear('left')">Clear</ion-button>
+          }
+        </div>
+        @if (loadingLeft()) {
+          <ion-spinner name="crescent" aria-label="Loading left Pokémon"></ion-spinner>
+        } @else if (errorLeft()) {
+          <app-error-retry
+            presentation="inline"
+            title="Could not load Pokémon"
+            (retry)="retry('left')"
+            (dismiss)="errorLeft.set(false)"
+          ></app-error-retry>
+        } @else if (leftPokemon(); as pokemon) {
+          <img [src]="getSprite(pokemon) || 'assets/icon/favicon.png'" [alt]="pokemon.name" />
+          <span class="compare-id">{{ formatPokemonId(pokemon.id) }}</span>
+          <h4>{{ formatPokemonName(pokemon.name) }}</h4>
+          <div class="type-row">
+            @for (type of pokemon.types; track type.type.name) {
+              <app-type-chip [type]="type.type.name"></app-type-chip>
+            }
+          </div>
+        } @else {
+          <p class="placeholder">Select a Pokémon</p>
+        }
+      </section>
+
+      <div class="compare-vs" aria-hidden="true">vs</div>
+
+      <section class="compare-card">
+        <div class="compare-header">
+          <h3>Right</h3>
+          @if (rightPokemon()) {
+            <ion-button fill="clear" size="small" color="medium" (click)="clear('right')">Clear</ion-button>
+          }
+        </div>
+        @if (loadingRight()) {
+          <ion-spinner name="crescent" aria-label="Loading right Pokémon"></ion-spinner>
+        } @else if (errorRight()) {
+          <app-error-retry
+            presentation="inline"
+            title="Could not load Pokémon"
+            (retry)="retry('right')"
+            (dismiss)="errorRight.set(false)"
+          ></app-error-retry>
+        } @else if (rightPokemon(); as pokemon) {
+          <img [src]="getSprite(pokemon) || 'assets/icon/favicon.png'" [alt]="pokemon.name" />
+          <span class="compare-id">{{ formatPokemonId(pokemon.id) }}</span>
+          <h4>{{ formatPokemonName(pokemon.name) }}</h4>
+          <div class="type-row">
+            @for (type of pokemon.types; track type.type.name) {
+              <app-type-chip [type]="type.type.name"></app-type-chip>
+            }
+          </div>
+        } @else {
+          <p class="placeholder">Select a Pokémon</p>
+        }
+      </section>
+    </div>
+
+    @if (leftPokemon() && rightPokemon()) {
+      <div class="physical-compare" aria-live="polite">
+        <div class="physical-compare-row">
+          <strong [class.winner]="isHeightWinner('left')">
+            {{ formatHeight(leftPokemon()) }}
+            @if (isHeightWinner('left')) {
+              <span class="winner-badge">Higher</span>
+            }
+          </strong>
+          <span>Height</span>
+          <strong [class.winner]="isHeightWinner('right')">
+            {{ formatHeight(rightPokemon()) }}
+            @if (isHeightWinner('right')) {
+              <span class="winner-badge">Higher</span>
+            }
+          </strong>
+        </div>
+        <div class="physical-compare-row">
+          <strong [class.winner]="isWeightWinner('left')">
+            {{ formatWeight(leftPokemon()) }}
+            @if (isWeightWinner('left')) {
+              <span class="winner-badge">Higher</span>
+            }
+          </strong>
+          <span>Weight</span>
+          <strong [class.winner]="isWeightWinner('right')">
+            {{ formatWeight(rightPokemon()) }}
+            @if (isWeightWinner('right')) {
+              <span class="winner-badge">Higher</span>
+            }
+          </strong>
+        </div>
+      </div>
+
+      <h2 class="section-title">Stat Comparison</h2>
+      @for (statName of getStatNames(); track statName) {
+        <div class="compare-stat-block">
+          <div class="compare-stat-values">
+            <strong [class.winner]="isStatWinner('left', statName)">
+              {{ getStatValue(leftPokemon(), statName) }}
+              @if (isStatWinner('left', statName)) {
+                <span class="winner-badge">Higher</span>
+              }
+            </strong>
+            <span>{{ formatPokemonName(statName) }}</span>
+            <strong [class.winner]="isStatWinner('right', statName)">
+              {{ getStatValue(rightPokemon(), statName) }}
+              @if (isStatWinner('right', statName)) {
+                <span class="winner-badge">Higher</span>
+              }
+            </strong>
+          </div>
+          <app-stat-bar
+            [name]="statName"
+            [value]="getStatValue(leftPokemon(), statName)"
+            [highlight]="isStatWinner('left', statName)"
+          ></app-stat-bar>
+          <app-stat-bar
+            [name]="statName"
+            [value]="getStatValue(rightPokemon(), statName)"
+            [highlight]="isStatWinner('right', statName)"
+          ></app-stat-bar>
+        </div>
+      }
+    }
+  </div>
+</ion-content>

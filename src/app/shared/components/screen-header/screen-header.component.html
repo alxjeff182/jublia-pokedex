@@ -1,0 +1,104 @@
+<ion-header
+  class="app-screen-header"
+  [class.app-screen-header--brand]="isBrand"
+  [class.app-screen-header--overlay]="isOverlay"
+  [class.app-screen-header--has-back]="hasBack && !isOverlay"
+  [class.app-screen-header--has-end]="hasEndAction && !isOverlay"
+>
+  <ion-toolbar [class.brand-toolbar]="isBrand" [class.overlay-toolbar]="isOverlay">
+    @if (isOverlay) {
+      <div class="overlay-nav">
+        @if (hasBack) {
+          <button type="button" class="nav-circle" (click)="onBackClick()" aria-label="Back">
+            <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+          </button>
+        } @else {
+          <span class="overlay-nav__spacer" aria-hidden="true"></span>
+        }
+
+        <div class="overlay-nav__end">
+          <ng-content select="[header-end]" />
+          @if (rightIcon) {
+            <button
+              type="button"
+              class="nav-circle"
+              (click)="onRightClick()"
+              [attr.aria-label]="rightAriaLabel || 'Action'"
+            >
+              <ion-icon [name]="rightIcon" aria-hidden="true"></ion-icon>
+            </button>
+          }
+        </div>
+      </div>
+    } @else {
+      <ng-content select="[header-start]" />
+
+      @if (hasBack) {
+        <ion-buttons slot="start">
+          <ion-button fill="clear" class="back-button" (click)="onBackClick()" aria-label="Back">
+            <ion-icon slot="icon-only" name="chevron-back-outline" aria-hidden="true"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      }
+
+      @if (isBrand) {
+        <div class="header-brand">
+          <h1 class="header-title">JUBLIA Dex</h1>
+          <button
+            type="button"
+            class="header-pokeball-button"
+            (click)="onPokeballClick()"
+            aria-label="Go to Home"
+          >
+            <img
+              class="header-pokeball"
+              src="assets/icon/pokeball.png"
+              alt=""
+              width="40"
+              height="40"
+            />
+          </button>
+        </div>
+      } @else {
+        <ng-content select="[header-title]" />
+        @if (title) {
+          <ion-title>{{ title }}</ion-title>
+        }
+      }
+
+      <ng-content select="[header-end]" />
+
+      @if (rightIcon) {
+        <ion-buttons slot="end">
+          <ion-button
+            fill="clear"
+            class="action-button"
+            (click)="onRightClick()"
+            [attr.aria-label]="rightAriaLabel || 'Action'"
+          >
+            <ion-icon slot="icon-only" [name]="rightIcon" aria-hidden="true"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      } @else if (showPokeball) {
+        <ion-buttons slot="end">
+          <ion-button
+            fill="clear"
+            class="pokeball-button"
+            (click)="onPokeballClick()"
+            aria-label="Go to Home"
+          >
+            <img
+              class="header-pokeball"
+              src="assets/icon/pokeball.png"
+              alt=""
+              width="40"
+              height="40"
+            />
+          </ion-button>
+        </ion-buttons>
+      }
+    }
+  </ion-toolbar>
+
+  <ng-content select="[header-toolbar]" />
+</ion-header>

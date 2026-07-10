@@ -1,0 +1,45 @@
+<ion-card class="pokemon-card">
+  <ion-button
+    class="favorite-btn"
+    [class.favorite-btn--pop]="favoritePop()"
+    fill="clear"
+    size="small"
+    [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
+    (click)="toggleFavorite($event)"
+  >
+    <ion-icon
+      slot="icon-only"
+      name="heart"
+      aria-hidden="true"
+      [color]="isFavorite() ? 'danger' : 'medium'"
+    ></ion-icon>
+  </ion-button>
+
+  <button
+    type="button"
+    class="card-nav"
+    [attr.aria-label]="'View ' + displayName + ' details'"
+    (click)="openDetail($event)"
+  >
+    <div class="image-wrap">
+      <div class="type-aura type-aura--outer" [style.background]="auraBackgroundOuter"></div>
+      <div class="type-aura type-aura--inner" [style.background]="auraBackground"></div>
+      <img
+        class="pokemon-sprite"
+        [src]="pokemon.sprite || 'assets/icon/favicon.png'"
+        [alt]="displayName"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="card-body">
+      <span class="pokemon-id">{{ displayId }}</span>
+      <h3 class="pokemon-name">{{ displayName }}</h3>
+      <div class="type-row">
+        @for (type of pokemon.types; track type) {
+          <app-type-chip [type]="type"></app-type-chip>
+        }
+      </div>
+    </div>
+  </button>
+</ion-card>

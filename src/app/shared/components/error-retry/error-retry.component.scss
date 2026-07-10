@@ -1,0 +1,53 @@
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  min-height: 50vh;
+}
+
+.error-state ion-icon,
+.error-card ion-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.error-state h2,
+.error-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  font-weight: var(--jublia-font-weight-bold);
+  color: var(--jublia-color-text);
+}
+
+.error-state p,
+.error-card p {
+  margin: 0 0 20px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.error-modal {
+  --background: transparent;
+  --backdrop-opacity: 0.35;
+}
+
+.error-modal-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px;
+  background: transparent;
+}
+
+.error-card {
+  width: min(100%, 320px);
+  background: var(--jublia-color-surface);
+  border-radius: var(--jublia-card-radius);
+  box-shadow: var(--jublia-shadow-medium);
+  padding: 28px 24px;
+  text-align: center;
+}

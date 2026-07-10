@@ -1,0 +1,121 @@
+name: Native
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: native-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android-smoke:
+    name: Android Emulator Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Build and smoke test on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            cd android
+            chmod +x gradlew
+            ./gradlew assembleDebug
+            adb install -r app/build/outputs/apk/debug/app-debug.apk
+            adb shell am start -n com.jublia.dex/.MainActivity
+            sleep 12
+            adb shell pidof com.jublia.dex
+
+      - name: Upload Android APK on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
+
+  ios-smoke:
+    name: iOS Simulator Smoke
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios/App
+          pod install
+
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -derivedDataPath ios/build \
+            build
+
+      - name: Boot simulator and launch app
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available | grep 'iPhone 16 (' | head -n 1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl install booted ios/build/Build/Products/Debug-iphonesimulator/App.app
+          xcrun simctl launch booted com.jublia.dex
+          sleep 8
+          xcrun simctl spawn booted launchctl list | grep -i jublia
+
+      - name: Upload iOS build on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-app
+          path: ios/build/Build/Products/Debug-iphonesimulator/App.app
+          retention-days: 7

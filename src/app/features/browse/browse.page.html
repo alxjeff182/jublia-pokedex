@@ -1,0 +1,24 @@
+<app-screen-header title="Browse Types" [showPokeball]="true" />
+
+<ion-content id="main-content" role="main">
+  <div class="page-container">
+    <p class="section-label">Explore by Pokémon type</p>
+    <p class="section-hint">Tap a type to filter Pokémon on Home</p>
+    <div class="type-grid">
+      @for (type of types; track type; let i = $index) {
+        <button
+          type="button"
+          class="type-tile"
+          [class.type-tile--pressed]="pressedType() === type"
+          [style.--tile-color]="typeColor(type)"
+          [style.--enter-delay]="i * 35 + 'ms'"
+          (click)="openType(type)"
+        >
+          <span class="type-tile__swatch" aria-hidden="true"></span>
+          <span class="type-tile__label">{{ typeLabel(type) }}</span>
+          <ion-icon class="type-tile__arrow" name="chevron-forward" aria-hidden="true"></ion-icon>
+        </button>
+      }
+    </div>
+  </div>
+</ion-content>

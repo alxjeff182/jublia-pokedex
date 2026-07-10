@@ -1,0 +1,65 @@
+// JUBLIA Dex design tokens — CSS custom properties
+// Keep values in sync with src/app/core/constants/design-tokens.ts
+
+:root {
+  // Brand
+  --jublia-color-primary: #e53935;
+  --jublia-color-primary-rgb: 229, 57, 53;
+  --jublia-color-background: #f5f5f7;
+  --jublia-color-surface: #ffffff;
+  --jublia-color-secondary: #00b8d9;
+  --jublia-color-text: #1a1a1a;
+  --jublia-color-text-muted: #5c5c61;
+  --jublia-color-border: #ececf1;
+
+  // Shape & elevation
+  --jublia-card-radius: 20px;
+  --jublia-chip-radius: 999px;
+  --jublia-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --jublia-shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  // Typography (system / Ionic default — no custom web font)
+  --jublia-font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue',
+    Roboto, 'Segoe UI', Arial, sans-serif;
+  --jublia-font-size-xs: 0.75rem;
+  --jublia-font-size-sm: 0.875rem;
+  --jublia-font-size-base: 1rem;
+  --jublia-font-size-lg: 1.125rem;
+  --jublia-font-size-xl: 1.25rem;
+  --jublia-font-size-2xl: 1.75rem;
+  --jublia-font-weight-regular: 400;
+  --jublia-font-weight-medium: 500;
+  --jublia-font-weight-semibold: 600;
+  --jublia-font-weight-bold: 700;
+  --jublia-font-weight-extrabold: 800;
+
+  // Pokémon type palette
+  --jublia-type-normal: #a8a878;
+  --jublia-type-fire: #f08030;
+  --jublia-type-water: #6890f0;
+  --jublia-type-electric: #f8d030;
+  --jublia-type-grass: #78c850;
+  --jublia-type-ice: #98d8d8;
+  --jublia-type-fighting: #c03028;
+  --jublia-type-poison: #a040a0;
+  --jublia-type-ground: #e0c068;
+  --jublia-type-flying: #a890f0;
+  --jublia-type-psychic: #f85888;
+  --jublia-type-bug: #a8b820;
+  --jublia-type-rock: #b8a038;
+  --jublia-type-ghost: #705898;
+  --jublia-type-dragon: #7038f8;
+  --jublia-type-dark: #705848;
+  --jublia-type-steel: #b8b8d0;
+  --jublia-type-fairy: #ee99ac;
+}
+
+.ion-palette-dark {
+  --jublia-color-background: #0f0f12;
+  --jublia-color-surface: #1c1c1e;
+  --jublia-color-text: #f5f5f7;
+  --jublia-color-text-muted: #98989d;
+  --jublia-color-border: #2c2c2e;
+  --jublia-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.32);
+  --jublia-shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.4);
+}

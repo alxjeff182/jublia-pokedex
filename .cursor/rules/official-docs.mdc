@@ -1,0 +1,50 @@
+---
+description: Always consult official Ionic, Angular, and Capacitor docs before UI or API changes
+globs: src/**/*.ts,src/**/*.html,src/**/*.scss
+alwaysApply: true
+---
+
+# Official documentation first
+
+Before changing components, styles, routing, or native behavior, consult:
+
+- Ionic: https://ionicframework.com/docs
+- Angular: https://angular.dev
+- Capacitor: https://capacitorjs.com/docs
+
+Project guide: `docs/development-guidelines.md`
+
+## Ionic styling (required)
+
+1. Use documented **component APIs** (`color`, `outline`, `fill`, `disabled`) before custom CSS.
+2. Theme with **documented CSS custom properties** only (e.g. `ion-chip`: `--background`, `--color`).
+3. Do **not** nest `ion-label` inside `ion-chip` — use plain text per ion-chip docs.
+4. Avoid global `ion-*` overrides; prefer page-scoped `*.page.scss` or design tokens.
+5. Horizontal `ion-chip` rows: `flex-shrink: 0` on each chip to prevent truncated text.
+
+## Examples
+
+```html
+<!-- BAD - ion-label inside chip, custom class fighting Ionic -->
+<ion-chip class="my-chip" outline>
+  <ion-label>Fire</ion-label>
+</ion-chip>
+
+<!-- GOOD - Ionic API + plain text -->
+<ion-chip color="primary">Fire</ion-chip>
+<ion-chip outline>Water</ion-chip>
+```
+
+```scss
+/* BAD - undocumented host hacks */
+ion-chip.my-chip {
+  width: 12px;
+  border: 1px solid gray;
+}
+
+/* GOOD - documented CSS variables */
+ion-chip {
+  --background: var(--jublia-color-surface);
+  --color: var(--jublia-color-text);
+}
+```

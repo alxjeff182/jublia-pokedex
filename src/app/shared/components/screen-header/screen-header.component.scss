@@ -1,0 +1,171 @@
+:host {
+  display: block;
+}
+
+.app-screen-header ion-toolbar {
+  --background: #ffffff;
+  --border-width: 0;
+  --min-height: 56px;
+  --padding-start: 4px;
+  --padding-end: 8px;
+}
+
+.app-screen-header--brand ion-toolbar,
+.app-screen-header--overlay ion-toolbar {
+  --background: #f5f5f7;
+}
+
+.app-screen-header--brand ion-toolbar {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: auto;
+}
+
+.app-screen-header--overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.app-screen-header--overlay ion-toolbar,
+.overlay-toolbar {
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.brand-toolbar {
+  padding-top: calc(8px + env(safe-area-inset-top, 0px));
+  padding-bottom: 4px;
+}
+
+.app-screen-header:not(.app-screen-header--overlay) ion-toolbar {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.header-pokeball {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+ion-title {
+  font-size: var(--jublia-font-size-xl);
+  font-weight: var(--jublia-font-weight-extrabold);
+  color: var(--jublia-color-text);
+  padding-inline: 0;
+}
+
+.app-screen-header:not(.app-screen-header--has-back) ion-title {
+  padding-inline-start: 12px;
+  text-align: start;
+}
+
+.app-screen-header--has-back ion-title {
+  text-align: center;
+  padding-inline: 48px;
+}
+
+.header-pokeball-wrap,
+.header-pokeball-button,
+.pokeball-button {
+  display: flex;
+  align-items: center;
+}
+
+.header-pokeball-button,
+.pokeball-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.pokeball-button {
+  --padding-start: 0;
+  --padding-end: 0;
+  margin-inline-end: -4px;
+}
+
+.header-pokeball-wrap {
+  padding-inline-end: 8px;
+}
+
+.back-button,
+.action-button {
+  --color: var(--jublia-color-text);
+}
+
+.back-button {
+  margin-inline-start: -4px;
+}
+
+.overlay-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 0;
+}
+
+.overlay-nav__end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.overlay-nav__spacer {
+  width: 44px;
+  height: 44px;
+}
+
+.nav-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #efefef;
+  padding: 0;
+  cursor: pointer;
+}
+
+.nav-circle ion-icon {
+  font-size: 22px;
+  color: #1a1a1a;
+}
+
+:host ::ng-deep [header-toolbar] {
+  --background: #ffffff;
+  --border-width: 0;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --min-height: auto;
+}
+
+.app-screen-header--brand ::ng-deep [header-toolbar] {
+  --background: #f5f5f7;
+}

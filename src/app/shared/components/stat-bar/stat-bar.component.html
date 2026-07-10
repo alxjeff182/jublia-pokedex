@@ -1,0 +1,32 @@
+@if (compact) {
+  <div
+    class="stat-row compact"
+    [class.highlight]="highlight"
+    [class.muted-value]="mutedValue"
+    [attr.aria-label]="label + ': ' + value + ' out of ' + max"
+    role="group"
+  >
+    <span class="sr-only">{{ label }}</span>
+    <span class="stat-value" aria-hidden="true">{{ value }}</span>
+    <ion-progress-bar
+      aria-hidden="true"
+      [value]="ratio"
+      color="primary"
+    ></ion-progress-bar>
+  </div>
+} @else {
+  <div
+    class="stat-row"
+    [class.highlight]="highlight"
+    role="group"
+    [attr.aria-label]="label + ': ' + value + ' out of ' + max"
+  >
+    <span class="stat-name">{{ label }}</span>
+    <span class="stat-value">{{ value }}</span>
+    <ion-progress-bar
+      aria-hidden="true"
+      [value]="ratio"
+      color="primary"
+    ></ion-progress-bar>
+  </div>
+}

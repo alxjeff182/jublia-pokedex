@@ -1,0 +1,77 @@
+<app-screen-header title="Settings" [showPokeball]="true" />
+
+<ion-content id="main-content" role="main">
+  <div class="page-container">
+    <div class="settings-hero">
+      <img src="assets/icon/pokeball.png" alt="JUBLIA Dex" width="56" height="56" />
+      <h2>JUBLIA Dex</h2>
+      <p>Premium Pokédex Experience</p>
+      <ion-note>Version {{ appVersion }}</ion-note>
+    </div>
+
+    <ion-list class="settings-list" lines="full">
+      <ion-item button detail (click)="openCompare()">
+        <ion-label>Compare Pokémon</ion-label>
+      </ion-item>
+
+      <ion-item class="theme-item">
+        <ion-label>
+          <h3>Appearance</h3>
+          <p>Choose light, dark, or match your system setting</p>
+        </ion-label>
+        <ion-segment
+          slot="end"
+          [value]="themePreference()"
+          (ionChange)="onThemeChange($event)"
+          aria-label="Theme preference"
+        >
+          <ion-segment-button value="system">
+            <ion-label>System</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="light">
+            <ion-label>Light</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="dark">
+            <ion-label>Dark</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>
+          <h3>Haptic feedback</h3>
+          <p>Vibration on favorites, filters, and tab changes</p>
+        </ion-label>
+        <ion-toggle
+          slot="end"
+          [checked]="hapticsEnabled()"
+          (ionChange)="onHapticsToggle($event)"
+          aria-label="Toggle haptic feedback"
+        ></ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>
+          <h3>Clear favorites</h3>
+          <p>Remove all Pokémon from your favorites list</p>
+        </ion-label>
+        <ion-button
+          slot="end"
+          fill="outline"
+          color="danger"
+          [disabled]="clearing()"
+          aria-label="Clear all favorites"
+          (click)="clearFavorites()"
+        >
+          Clear
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <p class="settings-status" aria-live="polite">
+      @if (clearing()) {
+        Clearing favorites...
+      }
+    </p>
+  </div>
+</ion-content>

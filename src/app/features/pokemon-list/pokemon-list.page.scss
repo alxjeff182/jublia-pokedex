@@ -1,0 +1,343 @@
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.section-label {
+  font-size: var(--jublia-font-size-base);
+  font-weight: var(--jublia-font-weight-bold);
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.clear-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--jublia-color-primary) 35%, #ffffff);
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--jublia-color-primary) 10%, #ffffff);
+  color: var(--jublia-color-primary);
+  font-size: var(--jublia-font-size-sm);
+  font-weight: var(--jublia-font-weight-bold);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.clear-all-btn ion-icon {
+  font-size: 1.1rem;
+}
+
+.clear-all-btn__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--jublia-color-primary);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.clear-all-btn:active {
+  transform: scale(0.94);
+}
+
+.clear-all-btn--clearing {
+  animation: clear-pulse 0.4s ease;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+@keyframes clear-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(0.92);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.search-toolbar {
+  padding-top: 0;
+  padding-bottom: 8px;
+}
+
+.home-searchbar {
+  --background: #ececf1;
+  --border-radius: 9999px;
+  --box-shadow: none;
+  --icon-color: var(--jublia-color-text-muted);
+  --placeholder-color: var(--jublia-color-text-muted);
+  --color: #1a1a1a;
+  padding: 0;
+  transition: --background 0.2s ease;
+}
+
+.home-searchbar.searchbar-has-focus {
+  --background: #ffffff;
+  --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.type-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+
+.type-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.type-filters ion-chip.type-filter-chip {
+  flex-shrink: 0;
+  margin: 0;
+  height: 36px;
+  min-height: 36px;
+  padding-inline: 16px;
+  font-size: var(--jublia-font-size-sm);
+  font-weight: var(--jublia-font-weight-semibold);
+  text-transform: capitalize;
+  border-radius: 9999px;
+  --border-radius: 9999px;
+  --box-shadow: none;
+  --background: var(--jublia-color-border);
+  --color: var(--jublia-color-text-muted);
+  border: none;
+  scroll-snap-align: start;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.type-filters ion-chip.type-filter-chip:active {
+  transform: scale(0.94);
+}
+
+.type-filter-chip--active {
+  transform: scale(1.02);
+}
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.active-filter-chip {
+  margin: 0;
+  height: 32px;
+  --background: #ffffff;
+  --color: var(--jublia-color-text);
+  border: 1px solid #ececf1;
+  font-size: var(--jublia-font-size-xs);
+  font-weight: var(--jublia-font-weight-semibold);
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.active-filter-chip:active {
+  transform: scale(0.96);
+  --background: #f5f5f7;
+}
+
+.active-filter-chip ion-icon {
+  margin-inline-start: 4px;
+  font-size: 1rem;
+  color: var(--jublia-color-text-muted);
+}
+
+.results-meta {
+  margin: 0 0 12px;
+  font-size: var(--jublia-font-size-sm);
+  font-weight: var(--jublia-font-weight-semibold);
+  color: var(--jublia-color-text-muted);
+}
+
+.pokemon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .pokemon-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .pokemon-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 0 8px;
+  color: var(--jublia-color-text-muted);
+  font-size: var(--jublia-font-size-sm);
+}
+
+.home-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px 40px;
+}
+
+.home-empty-state__visual {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 8px;
+}
+
+.home-empty-state__glow {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--jublia-color-primary) 24%, transparent) 0%,
+    transparent 72%
+  );
+  animation: empty-glow 2.4s ease-in-out infinite;
+}
+
+.home-empty-state__pokeball {
+  position: relative;
+  z-index: 1;
+  animation: empty-float 2.4s ease-in-out infinite;
+}
+
+.home-empty-state__title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.home-empty-state__message {
+  margin: 0 0 20px;
+  max-width: 300px;
+  font-size: var(--jublia-font-size-sm);
+  line-height: 1.5;
+  color: var(--jublia-color-text-muted);
+}
+
+.home-empty-state__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: var(--jublia-font-size-xs);
+  font-weight: var(--jublia-font-weight-semibold);
+  color: var(--jublia-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.home-empty-state__active,
+.home-empty-state__suggestions {
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 16px;
+}
+
+.home-empty-state__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.home-empty-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid #ececf1;
+  background: #ffffff;
+  color: var(--chip-color, var(--jublia-color-text));
+  font-size: var(--jublia-font-size-sm);
+  font-weight: var(--jublia-font-weight-semibold);
+  text-transform: capitalize;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.home-empty-chip ion-icon {
+  font-size: 1rem;
+  color: var(--jublia-color-text-muted);
+}
+
+.home-empty-chip--search ion-icon:first-child {
+  color: var(--jublia-color-primary);
+}
+
+.home-empty-chip--suggestion {
+  border-color: color-mix(in srgb, var(--chip-color) 35%, #ececf1);
+  background: color-mix(in srgb, var(--chip-color) 12%, #ffffff);
+}
+
+.home-empty-chip:active {
+  transform: scale(0.95);
+}
+
+.home-empty-chip--suggestion:hover {
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--chip-color) 18%, transparent);
+}
+
+.home-empty-state__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 260px;
+}
+
+.home-empty-state__reset {
+  --border-radius: 9999px;
+  font-weight: var(--jublia-font-weight-semibold);
+}
+
+.home-empty-state__reset:active {
+  transform: scale(0.98);
+}

@@ -1,0 +1,7 @@
+{
+  "name": "jublia-dex",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

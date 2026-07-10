@@ -1,0 +1,16 @@
+.type-chip {
+  --background: var(--jublia-type-normal);
+  --color: #ffffff;
+  margin: 0;
+  height: 26px;
+  min-height: 26px;
+  font-size: var(--jublia-font-size-xs);
+  font-weight: var(--jublia-font-weight-semibold);
+  border-radius: var(--jublia-chip-radius);
+  text-transform: capitalize;
+
+  ion-label {
+    color: #ffffff;
+    font-weight: var(--jublia-font-weight-semibold);
+  }
+}

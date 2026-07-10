@@ -1,0 +1,105 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ */
+
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+@import "theme/skeleton";
+@import "theme/animations";
+@import "theme/a11y";
+
+html {
+  color-scheme: light dark;
+}
+
+html,
+body {
+  color: var(--jublia-color-text);
+  background: var(--jublia-color-background);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: var(--jublia-font-weight-bold);
+  color: var(--jublia-color-text);
+}
+
+p,
+span {
+  font-weight: var(--jublia-font-weight-regular);
+}
+
+ion-content {
+  --background: var(--jublia-color-background);
+}
+
+ion-toolbar {
+  --background: var(--jublia-color-surface);
+  --border-width: 0;
+  --color: var(--jublia-color-text);
+}
+
+ion-title {
+  font-weight: var(--jublia-font-weight-bold);
+  font-size: var(--jublia-font-size-lg);
+}
+
+ion-searchbar {
+  --background: var(--jublia-color-surface);
+  --border-radius: var(--jublia-chip-radius);
+  --box-shadow: var(--jublia-shadow-soft);
+  --color: var(--jublia-color-text);
+  --placeholder-color: var(--jublia-color-text-muted);
+}
+
+ion-card,
+.jublia-card {
+  margin: 0;
+  border-radius: var(--jublia-card-radius);
+  box-shadow: var(--jublia-shadow-soft);
+  background: var(--jublia-color-surface);
+}
+
+ion-card.pokemon-card {
+  --background: var(--jublia-color-surface);
+  --color: var(--jublia-color-text);
+  margin: 0;
+  border-radius: var(--jublia-card-radius);
+  border: 1px solid var(--jublia-color-border);
+  box-shadow: var(--jublia-shadow-soft);
+  cursor: pointer;
+}
+
+.page-container {
+  padding: 16px;
+}
+
+.section-title {
+  font-size: var(--jublia-font-size-lg);
+  font-weight: var(--jublia-font-weight-bold);
+  margin: 16px 0 12px;
+  color: var(--jublia-color-text);
+}
+
+.text-muted {
+  color: var(--jublia-color-text-muted);
+}
+
+.text-semibold {
+  font-weight: var(--jublia-font-weight-semibold);
+}
+
+.text-bold {
+  font-weight: var(--jublia-font-weight-bold);
+}

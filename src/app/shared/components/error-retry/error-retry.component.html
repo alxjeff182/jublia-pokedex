@@ -1,0 +1,36 @@
+@if (presentation === 'modal') {
+  <ion-modal
+    class="error-modal"
+    [isOpen]="true"
+    [backdropDismiss]="true"
+    (didDismiss)="onDismiss()"
+  >
+    <ng-template>
+      <div class="error-modal-backdrop">
+        <div class="error-card">
+          <ion-icon name="cloud-offline-outline" color="danger"></ion-icon>
+          <h2>{{ title }}</h2>
+          <ion-text color="medium">
+            <p>{{ message }}</p>
+          </ion-text>
+          <ion-button expand="block" color="primary" (click)="onRetry()">
+            <ion-icon slot="start" name="refresh-outline"></ion-icon>
+            Retry
+          </ion-button>
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+} @else {
+  <div class="error-state">
+    <ion-icon name="cloud-offline-outline" color="danger"></ion-icon>
+    <h2>{{ title }}</h2>
+    <ion-text color="medium">
+      <p>{{ message }}</p>
+    </ion-text>
+    <ion-button color="primary" (click)="onRetry()">
+      <ion-icon slot="start" name="refresh-outline"></ion-icon>
+      Retry
+    </ion-button>
+  </div>
+}
