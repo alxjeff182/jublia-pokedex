@@ -16,25 +16,15 @@
 
       <ion-item class="theme-item">
         <ion-label>
-          <h3>Appearance</h3>
-          <p>Choose light, dark, or match your system setting</p>
+          <h3>Dark mode</h3>
+          <p>Switch between light and dark appearance</p>
         </ion-label>
-        <ion-segment
+        <ion-toggle
           slot="end"
-          [value]="themePreference()"
-          (ionChange)="onThemeChange($event)"
-          aria-label="Theme preference"
-        >
-          <ion-segment-button value="system">
-            <ion-label>System</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="light">
-            <ion-label>Light</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="dark">
-            <ion-label>Dark</ion-label>
-          </ion-segment-button>
-        </ion-segment>
+          [checked]="theme.isDark()"
+          (ionChange)="onThemeToggle($event)"
+          aria-label="Toggle dark mode"
+        ></ion-toggle>
       </ion-item>
 
       <ion-item>

@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular/standalone';
@@ -26,7 +26,8 @@ describe('SettingsPage', () => {
     haptics.setEnabled.and.resolveTo();
     haptics.selectionChanged.and.resolveTo();
     theme = jasmine.createSpyObj('ThemeService', ['getPreference', 'setPreference']);
-    theme.getPreference.and.returnValue('system');
+    Object.defineProperty(theme, 'isDark', { value: signal(false) });
+    theme.getPreference.and.returnValue('light');
     theme.setPreference.and.resolveTo();
     alertController = jasmine.createSpyObj('AlertController', ['create']);
     toastController = jasmine.createSpyObj('ToastController', ['create']);
@@ -90,13 +91,13 @@ describe('SettingsPage', () => {
     expect(haptics.selectionChanged).toHaveBeenCalled();
   });
 
-  it('updates theme preference from segment', async () => {
-    await component.onThemeChange({ detail: { value: 'dark' } } as CustomEvent);
+  it('updates theme preference from toggle', async () => {
+    await component.onThemeToggle({ detail: { checked: true } } as CustomEvent);
     expect(theme.setPreference).toHaveBeenCalledWith('dark');
   });
 
-  it('ignores invalid theme values', async () => {
-    await component.onThemeChange({ detail: { value: 'neon' } } as CustomEvent);
-    expect(theme.setPreference).not.toHaveBeenCalled();
+  it('switches back to light from toggle', async () => {
+    await component.onThemeToggle({ detail: { checked: false } } as CustomEvent);
+    expect(theme.setPreference).toHaveBeenCalledWith('light');
   });
 });

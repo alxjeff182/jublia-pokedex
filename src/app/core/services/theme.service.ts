@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -9,7 +9,8 @@ const THEME_KEY = 'jublia_dex_theme';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly preference = signal<ThemePreference>('system');
+  private readonly preference = signal<ThemePreference>('light');
+  readonly isDark = computed(() => this.isDarkActive());
   private mediaQuery: MediaQueryList | null = null;
   private mediaListener: ((event: MediaQueryListEvent) => void) | null = null;
 
@@ -31,6 +32,10 @@ export class ThemeService {
     this.preference.set(preference);
     await Preferences.set({ key: THEME_KEY, value: preference });
     this.applyTheme();
+  }
+
+  async toggleDarkMode(): Promise<void> {
+    await this.setPreference(this.isDarkActive() ? 'light' : 'dark');
   }
 
   isDarkActive(): boolean {

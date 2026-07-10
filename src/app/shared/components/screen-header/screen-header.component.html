@@ -44,20 +44,44 @@
       @if (isBrand) {
         <div class="header-brand">
           <h1 class="header-title">JUBLIA Dex</h1>
-          <button
-            type="button"
-            class="header-pokeball-button"
-            (click)="onPokeballClick()"
-            aria-label="Go to Home"
-          >
-            <img
-              class="header-pokeball"
-              src="assets/icon/pokeball.png"
-              alt=""
-              width="40"
-              height="40"
-            />
-          </button>
+          <div class="header-brand__actions">
+            @if (showThemeToggle) {
+              <div class="theme-switch" role="group" aria-label="Theme appearance">
+                <ion-icon
+                  class="theme-switch__icon"
+                  [class.theme-switch__icon--active]="!theme.isDark()"
+                  name="sunny-outline"
+                  aria-hidden="true"
+                ></ion-icon>
+                <ion-toggle
+                  class="theme-switch__toggle"
+                  [checked]="theme.isDark()"
+                  (ionChange)="onThemeToggle($event)"
+                  aria-label="Toggle dark mode"
+                ></ion-toggle>
+                <ion-icon
+                  class="theme-switch__icon"
+                  [class.theme-switch__icon--active]="theme.isDark()"
+                  name="moon-outline"
+                  aria-hidden="true"
+                ></ion-icon>
+              </div>
+            }
+            <button
+              type="button"
+              class="header-pokeball-button"
+              (click)="onPokeballClick()"
+              aria-label="Go to Home"
+            >
+              <img
+                class="header-pokeball"
+                src="assets/icon/pokeball.png"
+                alt=""
+                width="40"
+                height="40"
+              />
+            </button>
+          </div>
         </div>
       } @else {
         <ng-content select="[header-title]" />
@@ -67,6 +91,31 @@
       }
 
       <ng-content select="[header-end]" />
+
+      @if (showThemeToggle && !isBrand) {
+        <ion-buttons slot="end">
+          <div class="theme-switch theme-switch--compact" role="group" aria-label="Theme appearance">
+            <ion-icon
+              class="theme-switch__icon"
+              [class.theme-switch__icon--active]="!theme.isDark()"
+              name="sunny-outline"
+              aria-hidden="true"
+            ></ion-icon>
+            <ion-toggle
+              class="theme-switch__toggle"
+              [checked]="theme.isDark()"
+              (ionChange)="onThemeToggle($event)"
+              aria-label="Toggle dark mode"
+            ></ion-toggle>
+            <ion-icon
+              class="theme-switch__icon"
+              [class.theme-switch__icon--active]="theme.isDark()"
+              name="moon-outline"
+              aria-hidden="true"
+            ></ion-icon>
+          </div>
+        </ion-buttons>
+      }
 
       @if (rightIcon) {
         <ion-buttons slot="end">

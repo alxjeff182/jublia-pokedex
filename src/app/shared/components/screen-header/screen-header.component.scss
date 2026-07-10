@@ -3,7 +3,7 @@
 }
 
 .app-screen-header ion-toolbar {
-  --background: #ffffff;
+  --background: var(--jublia-color-surface);
   --border-width: 0;
   --min-height: 56px;
   --padding-start: 4px;
@@ -12,7 +12,7 @@
 
 .app-screen-header--brand ion-toolbar,
 .app-screen-header--overlay ion-toolbar {
-  --background: #f5f5f7;
+  --background: var(--jublia-color-background);
 }
 
 .app-screen-header--brand ion-toolbar {
@@ -54,11 +54,18 @@
   padding: 0 4px;
 }
 
+.header-brand__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .header-title {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--jublia-color-text);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -148,18 +155,54 @@ ion-title {
   height: 44px;
   border: none;
   border-radius: 50%;
-  background: #efefef;
+  background: var(--jublia-color-border);
   padding: 0;
   cursor: pointer;
 }
 
 .nav-circle ion-icon {
   font-size: 22px;
-  color: #1a1a1a;
+  color: var(--jublia-color-text);
+}
+
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--jublia-color-border) 65%, transparent);
+  transition: background 0.2s ease;
+}
+
+.theme-switch--compact {
+  margin-inline-end: 4px;
+}
+
+.theme-switch__icon {
+  font-size: 16px;
+  color: var(--jublia-color-text-muted);
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.theme-switch__icon--active {
+  color: var(--jublia-color-primary);
+  transform: scale(1.1);
+}
+
+.theme-switch__toggle {
+  --handle-width: 18px;
+  --handle-height: 18px;
+  --handle-spacing: 2px;
+  --track-background: var(--jublia-color-border);
+  --track-background-checked: var(--jublia-color-primary);
+  transform: scale(0.9);
 }
 
 :host ::ng-deep [header-toolbar] {
-  --background: #ffffff;
+  --background: var(--jublia-color-surface);
   --border-width: 0;
   --padding-start: 8px;
   --padding-end: 8px;
@@ -167,5 +210,5 @@ ion-title {
 }
 
 .app-screen-header--brand ::ng-deep [header-toolbar] {
-  --background: #f5f5f7;
+  --background: var(--jublia-color-background);
 }

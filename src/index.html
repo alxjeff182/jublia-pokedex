@@ -8,6 +8,24 @@
   <base href="/" />
 
   <meta name="color-scheme" content="light dark" />
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('CapacitorStorage.jublia_dex_theme');
+        var isDark =
+          stored === 'dark' ||
+          (stored === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.add(
+          isDark ? 'ion-palette-dark' : 'ion-palette-light',
+        );
+        document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+      } catch (e) {
+        document.documentElement.classList.add('ion-palette-light');
+        document.documentElement.style.colorScheme = 'light';
+      }
+    })();
+  </script>
   <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0" />
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />

@@ -9,7 +9,7 @@
 .section-label {
   font-size: var(--jublia-font-size-base);
   font-weight: var(--jublia-font-weight-bold);
-  color: #1a1a1a;
+  color: var(--jublia-color-text);
   margin: 0;
 }
 
@@ -81,18 +81,18 @@
 }
 
 .home-searchbar {
-  --background: #ececf1;
+  --background: var(--jublia-color-border);
   --border-radius: 9999px;
   --box-shadow: none;
   --icon-color: var(--jublia-color-text-muted);
   --placeholder-color: var(--jublia-color-text-muted);
-  --color: #1a1a1a;
+  --color: var(--jublia-color-text);
   padding: 0;
   transition: --background 0.2s ease;
 }
 
 .home-searchbar.searchbar-has-focus {
-  --background: #ffffff;
+  --background: var(--jublia-color-surface);
   --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -153,7 +153,7 @@
 .active-filter-chip {
   margin: 0;
   height: 32px;
-  --background: #ffffff;
+  --background: var(--jublia-color-surface);
   --color: var(--jublia-color-text);
   border: 1px solid #ececf1;
   font-size: var(--jublia-font-size-xs);
@@ -165,7 +165,7 @@
 
 .active-filter-chip:active {
   transform: scale(0.96);
-  --background: #f5f5f7;
+  --background: var(--jublia-color-background);
 }
 
 .active-filter-chip ion-icon {
@@ -248,7 +248,7 @@
   margin: 0 0 8px;
   font-size: 1.25rem;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--jublia-color-text);
 }
 
 .home-empty-state__message {

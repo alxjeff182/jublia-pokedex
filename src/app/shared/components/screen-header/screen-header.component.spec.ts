@@ -1,8 +1,9 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenHeaderComponent } from './screen-header.component';
+import { ThemeService } from '../../../core/services/theme.service';
 
 describe('ScreenHeaderComponent', () => {
   let fixture: ComponentFixture<ScreenHeaderComponent>;
@@ -10,15 +11,21 @@ describe('ScreenHeaderComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let location: jasmine.SpyObj<Location>;
 
+  let theme: jasmine.SpyObj<ThemeService>;
+
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigateByUrl']);
     location = jasmine.createSpyObj('Location', ['back']);
+    theme = jasmine.createSpyObj('ThemeService', ['setPreference']);
+    Object.defineProperty(theme, 'isDark', { value: signal(false) });
+    theme.setPreference.and.resolveTo();
 
     await TestBed.configureTestingModule({
       imports: [ScreenHeaderComponent],
       providers: [
         { provide: Router, useValue: router },
         { provide: Location, useValue: location },
+        { provide: ThemeService, useValue: theme },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
@@ -78,5 +85,10 @@ describe('ScreenHeaderComponent', () => {
     Object.defineProperty(window.history, 'length', { configurable: true, value: 1 });
     component.onBackClick();
     expect(router.navigateByUrl).toHaveBeenCalledWith('/tabs/home');
+  });
+
+  it('updates theme from header toggle', async () => {
+    await component.onThemeToggle({ detail: { checked: true } } as CustomEvent);
+    expect(theme.setPreference).toHaveBeenCalledWith('dark');
   });
 });

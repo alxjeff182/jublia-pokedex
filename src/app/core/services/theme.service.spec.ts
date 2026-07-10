@@ -20,9 +20,9 @@ describe('ThemeService', () => {
     localStorage.clear();
   });
 
-  it('defaults to system preference', async () => {
+  it('defaults to light preference', async () => {
     await service.init();
-    expect(service.getPreference()).toBe('system');
+    expect(service.getPreference()).toBe('light');
   });
 
   it('applies dark palette when preference is dark', async () => {
@@ -68,7 +68,7 @@ describe('ThemeService', () => {
   it('ignores invalid stored preference values', async () => {
     localStorage.setItem(STORAGE_KEY, 'invalid');
     await service.init();
-    expect(service.getPreference()).toBe('system');
+    expect(service.getPreference()).toBe('light');
   });
 
   it('reacts to system preference changes', async () => {
@@ -109,6 +109,21 @@ describe('ThemeService', () => {
     } as unknown as MediaQueryList);
     await service.setPreference('system');
     expect(service.isDarkActive()).toBeFalse();
+  });
+
+  it('toggles between light and dark', async () => {
+    await service.setPreference('light');
+    await service.toggleDarkMode();
+    expect(service.getPreference()).toBe('dark');
+    await service.toggleDarkMode();
+    expect(service.getPreference()).toBe('light');
+  });
+
+  it('exposes isDark signal from preference', async () => {
+    await service.setPreference('dark');
+    expect(service.isDark()).toBeTrue();
+    await service.setPreference('light');
+    expect(service.isDark()).toBeFalse();
   });
 
   it('ignores status bar failures on native platforms', async () => {
