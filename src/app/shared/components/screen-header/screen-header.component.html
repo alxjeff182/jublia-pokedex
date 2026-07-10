@@ -48,9 +48,9 @@
             @if (showThemeToggle) {
               <div class="theme-switch" role="group" aria-label="Theme appearance">
                 <ion-icon
-                  class="theme-switch__icon"
+                  class="theme-switch__icon theme-switch__icon--sun"
                   [class.theme-switch__icon--active]="!theme.isDark()"
-                  name="sunny-outline"
+                  name="sunny"
                   aria-hidden="true"
                 ></ion-icon>
                 <ion-toggle
@@ -60,9 +60,9 @@
                   aria-label="Toggle dark mode"
                 ></ion-toggle>
                 <ion-icon
-                  class="theme-switch__icon"
+                  class="theme-switch__icon theme-switch__icon--moon"
                   [class.theme-switch__icon--active]="theme.isDark()"
-                  name="moon-outline"
+                  name="moon"
                   aria-hidden="true"
                 ></ion-icon>
               </div>
@@ -96,9 +96,9 @@
         <ion-buttons slot="end">
           <div class="theme-switch theme-switch--compact" role="group" aria-label="Theme appearance">
             <ion-icon
-              class="theme-switch__icon"
+              class="theme-switch__icon theme-switch__icon--sun"
               [class.theme-switch__icon--active]="!theme.isDark()"
-              name="sunny-outline"
+              name="sunny"
               aria-hidden="true"
             ></ion-icon>
             <ion-toggle
@@ -108,9 +108,9 @@
               aria-label="Toggle dark mode"
             ></ion-toggle>
             <ion-icon
-              class="theme-switch__icon"
+              class="theme-switch__icon theme-switch__icon--moon"
               [class.theme-switch__icon--active]="theme.isDark()"
-              name="moon-outline"
+              name="moon"
               aria-hidden="true"
             ></ion-icon>
           </div>

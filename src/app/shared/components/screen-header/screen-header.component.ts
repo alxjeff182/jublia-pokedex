@@ -11,7 +11,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { chevronBackOutline, moonOutline, shareOutline, sunnyOutline } from 'ionicons/icons';
+import { chevronBackOutline, moon, shareOutline, sunny } from 'ionicons/icons';
 import { ThemeService } from '../../../core/services/theme.service';
 
 export type ScreenHeaderVariant = 'default' | 'overlay' | 'brand';
@@ -46,7 +46,7 @@ export class ScreenHeaderComponent {
   @Input() pokeballHref = '/tabs/home';
 
   constructor() {
-    addIcons({ chevronBackOutline, shareOutline, sunnyOutline, moonOutline });
+    addIcons({ chevronBackOutline, shareOutline, sunny, moon });
   }
 
   get hasBack(): boolean {

@@ -168,11 +168,16 @@ ion-title {
 .theme-switch {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
+  gap: 5px;
+  padding: 5px 10px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--jublia-color-border) 65%, transparent);
-  transition: background 0.2s ease;
+  border: 1px solid color-mix(in srgb, var(--jublia-color-text) 14%, var(--jublia-color-border));
+  background: var(--jublia-color-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .theme-switch--compact {
@@ -180,25 +185,53 @@ ion-title {
 }
 
 .theme-switch__icon {
-  font-size: 16px;
+  font-size: 17px;
   color: var(--jublia-color-text-muted);
+  opacity: 0.5;
   transition:
     color 0.2s ease,
+    opacity 0.2s ease,
     transform 0.2s ease;
 }
 
-.theme-switch__icon--active {
-  color: var(--jublia-color-primary);
-  transform: scale(1.1);
+.theme-switch__icon--sun.theme-switch__icon--active {
+  color: #f59e0b;
+  opacity: 1;
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.45));
+}
+
+.theme-switch__icon--moon.theme-switch__icon--active {
+  color: #818cf8;
+  opacity: 1;
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 3px rgba(129, 140, 248, 0.45));
 }
 
 .theme-switch__toggle {
-  --handle-width: 18px;
-  --handle-height: 18px;
-  --handle-spacing: 2px;
-  --track-background: var(--jublia-color-border);
+  --handle-width: 20px;
+  --handle-height: 20px;
+  --handle-spacing: 3px;
+  --handle-background: #ffffff;
+  --handle-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+  --track-background: #c7c7cc;
   --track-background-checked: var(--jublia-color-primary);
-  transform: scale(0.9);
+  width: 46px;
+  height: 28px;
+  padding: 0;
+  contain: none;
+}
+
+:host-context(.ion-palette-dark) .theme-switch {
+  border-color: color-mix(in srgb, var(--jublia-color-text) 18%, var(--jublia-color-border));
+  background: color-mix(in srgb, var(--jublia-color-surface) 88%, #000000);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+:host-context(.ion-palette-dark) .theme-switch__toggle {
+  --track-background: #48484a;
+  --handle-background: #f2f2f7;
+  --handle-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 :host ::ng-deep [header-toolbar] {
