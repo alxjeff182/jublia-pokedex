@@ -1,11 +1,11 @@
 # App screenshots
 
-Submission-ready screenshots for **My Pokedex by Jublia AI** (light theme).
+Preview images for the README and portfolio. Captured with Playwright against the live dev build (real PokéAPI data, light theme).
 
-Regenerate:
+## Regenerate
 
 ```bash
-npx playwright test e2e/submission-screenshots.spec.ts
+npm run e2e:screenshots
 ```
 
 ## Mobile (390×844)
@@ -18,12 +18,10 @@ npx playwright test e2e/submission-screenshots.spec.ts
 | `mobile/04-favorites.png` | Favorites |
 | `mobile/05-settings.png` | Settings |
 
-## Desktop (1280×900)
+## Desktop (1280×960)
 
 | File | Screen |
 |------|--------|
 | `desktop/01-home.png` | Home |
 | `desktop/02-detail.png` | Pokémon detail |
 | `desktop/03-compare.png` | Compare |
-
-Use these PNG files as email attachments or portfolio references.

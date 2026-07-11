@@ -127,7 +127,7 @@ Use this checklist to track how closely the implementation matches the provided 
 - [x] Consistent header style (toolbar height, title alignment) across screens — **`app-screen-header` shared component; back button icon-only, title centered when back present**
 - [x] Consistent spacing/padding rhythm (16px page padding baseline)
 - [x] Dark mode not required by mockup — confirm light-only is acceptable
-- [x] Responsive check: layout holds up on larger (tablet/desktop) viewports per Ionic/Angular assessment requirement
+- [x] Responsive check: layout holds up on larger (tablet/desktop) viewports
 
 ---
 
@@ -135,7 +135,7 @@ Use this checklist to track how closely the implementation matches the provided 
 
 - [x] What does the mockup's 2nd tab icon (grid/search) represent — separate screen or same as Home? — **Browse Types screen; tap type → Home with filter**
 - [x] Is a Settings tab/screen required, and what would it contain? — **Yes: app hero, Compare link, Clear favorites**
-- [x] Is the radar chart a hard requirement, or can progress bars alone suffice for the assessment? — **Implemented in detail (bars + radar side-by-side)**
+- [x] Is the radar chart a hard requirement, or can progress bars alone suffice? — **Implemented in detail (bars + radar side-by-side)**
 - [x] Should Compare remain a dedicated tab, or be reachable from Detail instead? — **Route `/compare` from Settings, not a tab**
 
 ---

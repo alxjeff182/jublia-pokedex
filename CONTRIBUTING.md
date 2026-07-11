@@ -7,8 +7,8 @@ Thank you for contributing. This project uses Angular 20, Ionic 8, and Capacitor
 ## Getting started
 
 ```bash
-git clone <repository-url>
-cd Jublia-Pokedex
+git clone https://github.com/alxjeff182/jublia-pokedex.git
+cd jublia-pokedex
 npm install
 npm start
 ```

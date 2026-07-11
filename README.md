@@ -1,153 +1,116 @@
 # My Pokedex by Jublia AI
 
+[![Live demo](https://img.shields.io/badge/demo-live-E53935?style=for-the-badge)](https://alxjeff182.github.io/jublia-pokedex/)
 [![CI](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/ci.yml/badge.svg)](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/ci.yml)
 [![Deploy](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/deploy.yml/badge.svg)](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/deploy.yml)
 
-Premium Pokédex mobile/web application built for the Jublia Front End take-home assessment.
+Premium Pokédex experience for web, iOS, and Android — browse every Pokémon, dive into rich detail pages, save favorites, and compare stats head-to-head.
 
-## Stack
+**[Live demo](https://alxjeff182.github.io/jublia-pokedex/)** · **[Figma design](https://www.figma.com/design/QqH1OAWzDrtleQ77xrxlxR/My-Pokedex-by-Jublia-AI)** · **[Documentation](docs/README.md)**
 
-- Angular 20 (standalone APIs)
-- Ionic Angular 8
-- Capacitor 8 (iOS + Android)
-- REST PokéAPI (`https://pokeapi.co/api/v2`)
+---
 
-## Features
+## Preview
 
-- Infinite scroll Pokémon browsing
-- Pokémon detail view with image, stats, abilities, evolution chain, and moves
-- Multi-select type filtering
-- Search by name or ID
-- Favorites persisted with Capacitor Preferences
-- Compare two Pokémon side-by-side
-- Splash screen and connection error retry state
+### Mobile
 
-## Design
+| Home | Detail | Compare |
+|:---:|:---:|:---:|
+| ![Home — mobile](docs/screenshots/mobile/01-home.png) | ![Detail — mobile](docs/screenshots/mobile/02-detail.png) | ![Compare — mobile](docs/screenshots/mobile/03-compare.png) |
 
-UI follows the My Pokedex by Jublia AI design system:
+| Favorites | Settings |
+|:---:|:---:|
+| ![Favorites — mobile](docs/screenshots/mobile/04-favorites.png) | ![Settings — mobile](docs/screenshots/mobile/05-settings.png) |
 
-- **Figma file:** [My Pokedex by Jublia AI](https://www.figma.com/design/QqH1OAWzDrtleQ77xrxlxR/My-Pokedex-by-Jublia-AI) — Design System, Components, and screen frames (light/dark)
-- Primary: `#E53935`
-- Background: `#F5F5F7`
-- Accent: `#00B8D9`
-- Rounded cards, type chips, and bottom tab navigation
+### Desktop
 
-Design tokens live in [`src/theme/design-tokens.scss`](src/theme/design-tokens.scss). To regenerate or extend the Figma file locally, see [`scripts/figma-design/README.md`](scripts/figma-design/README.md).
+| Home | Detail | Compare |
+|:---:|:---:|:---:|
+| ![Home — desktop](docs/screenshots/desktop/01-home.png) | ![Detail — desktop](docs/screenshots/desktop/02-detail.png) | ![Compare — desktop](docs/screenshots/desktop/03-compare.png) |
 
-### Screenshots
+---
 
-Submission-ready app screenshots (mobile 390×844 and desktop 1280×900) are in [`docs/screenshots/`](docs/screenshots/). Regenerate with:
+## Highlights
+
+- **Full Pokédex browsing** — infinite scroll, search by name or ID, multi-select type filters
+- **Rich detail pages** — artwork, base stats with radar chart, abilities, moves, evolution chain
+- **Favorites** — persisted locally via Capacitor Preferences
+- **Stat duel** — compare two Pokémon side-by-side with BST bars and radar overlay
+- **Polished UX** — splash screen, light/dark theme, EN/ID i18n, offline banner, haptics on native
+- **Production-ready** — CI/CD, 85%+ test coverage, Playwright e2e, GitHub Pages deploy
+
+---
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Angular 20 (standalone components, signals) |
+| UI | Ionic Angular 8 |
+| Native | Capacitor 8 (iOS + Android) |
+| API | [PokéAPI](https://pokeapi.co/) REST |
+| Testing | Karma + Playwright |
+| Deploy | GitHub Actions → GitHub Pages |
+
+Design tokens live in [`src/theme/design-tokens.scss`](src/theme/design-tokens.scss). The Figma file includes Design System, Components, and screen frames in light/dark. Regenerate designs locally with [`scripts/figma-design/`](scripts/figma-design/README.md).
+
+---
+
+## Quick start
 
 ```bash
-npm run e2e:screenshots
-```
-
-## Documentation
-
-| Doc | Description |
-|---|---|
-| [`docs/development-guidelines.md`](docs/development-guidelines.md) | Ionic / Angular / Capacitor rules, styling, accessibility, OnPush |
-| [`docs/architecture.md`](docs/architecture.md) | Layers, data flow, caching, routing, Capacitor |
-| [`docs/testing-strategy.md`](docs/testing-strategy.md) | Unit, component, e2e tests; coverage gate |
-| [`docs/accessibility-checklist.md`](docs/accessibility-checklist.md) | WCAG checklist and screen reader steps |
-| [`docs/deployment.md`](docs/deployment.md) | GitHub Pages, iOS/Android release, env matrix |
-| [`docs/ui-checklist.md`](docs/ui-checklist.md) | Mockup alignment checklist |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | PR checklist, lint/test/coverage requirements |
-
-## Project Structure
-
-```text
-src/app/
-  core/           # models, services, interceptors, guards, strategies
-  shared/         # reusable UI components
-  features/       # screens (splash, list, detail, favorites, compare, tabs)
-```
-
-## Performance targets
-
-| Target | Threshold |
-|---|---|
-| Initial JS bundle (production) | < **1 MB** (enforced by `angular.json` budget) |
-| Total `www/` output | < **2 MB** (release checklist) |
-
-Analyze bundles locally: `npm run analyze`
-
-## Prerequisites
-
-- Node.js 20+ (see `.nvmrc`)
-- npm 10+
-- For native builds: Xcode (iOS) and/or Android Studio (Android)
-- For e2e: Playwright browsers (`npx playwright install chromium`)
-
-## Scripts
-
-| Script | Description |
-|---|---|
-| `npm start` | Dev server on port 8100 |
-| `npm run build` | Production build → `www/` |
-| `npm test` | Karma unit/component tests (watch) |
-| `npm run test:ci` | Headless tests + 85% coverage gate (CI) |
-| `npm run e2e` | Playwright smoke tests (starts dev server) |
-| `npm run e2e:screenshots` | Capture submission screenshots → `docs/screenshots/` |
-| `npm run e2e:ui` | Playwright interactive UI |
-| `npm run lint` | ESLint (`src/**/*.ts`, `src/**/*.html`) |
-| `npm run analyze` | Bundle size report (`analyze-report.html`) |
-| `npm run cap:sync` | Build + `cap sync` |
-| `npm run cap:ios` | Sync + open Xcode |
-| `npm run cap:android` | Sync + open Android Studio |
-
-## Run Locally (Web)
-
-```bash
+git clone https://github.com/alxjeff182/jublia-pokedex.git
+cd jublia-pokedex
 npm install
 npm start
 ```
 
-Open `http://localhost:8100`.
+Open **http://localhost:8100**
 
-## Build
+### Other commands
 
-```bash
-npm run build
-```
-
-## Native (Capacitor)
-
-Sync web assets and open native IDE:
-
-```bash
-npm run cap:ios
-npm run cap:android
-```
-
-Or manually:
-
-```bash
-npm run ionic:build
-npx cap sync
-npx cap open ios
-npx cap open android
-```
-
-## API Notes
-
-- List index: `GET /pokemon?limit=1300`
-- Detail: `GET /pokemon/{id}`
-- Species/flavor/evolution: `GET /pokemon-species/{id}`
-- Type filter: `GET /type/{name}`
-
-All access goes through `src/app/core/services/*`.
-
-## Assessment Mapping
-
-| Requirement | Implementation |
+| Command | Description |
 |---|---|
-| Infinite scroll | `pokemon-list` + `IonInfiniteScroll` |
-| Detail view | `pokemon-detail` |
-| Image view | Official artwork sprites on cards and detail |
-| Favorites | `FavoritesService` + Favorites tab |
-| Type filter | Multi-select chips with intersected type IDs |
+| `npm run build` | Production build → `www/` |
+| `npm test` | Unit & component tests |
+| `npm run test:ci` | Headless tests + coverage gate |
+| `npm run e2e` | Playwright smoke tests |
+| `npm run e2e:screenshots` | Regenerate preview images → `docs/screenshots/` |
+| `npm run cap:ios` / `cap:android` | Sync web assets and open native IDE |
+
+**Prerequisites:** Node.js 20+ (see `.nvmrc`), npm 10+. For e2e: `npx playwright install chromium`.
+
+---
+
+## Project structure
+
+```text
+src/app/
+  core/       # services, models, guards, interceptors
+  shared/     # reusable UI (cards, chips, charts, headers)
+  features/   # screens — list, detail, compare, favorites, settings, browse
+```
+
+See [`docs/architecture.md`](docs/architecture.md) for data flow, caching, and routing.
+
+---
+
+## Documentation
+
+| Doc | What's inside |
+|---|---|
+| [**docs/README.md**](docs/README.md) | Documentation index |
+| [architecture.md](docs/architecture.md) | Layers, PokéAPI integration, Capacitor |
+| [development-guidelines.md](docs/development-guidelines.md) | Ionic-first styling, signals, conventions |
+| [testing-strategy.md](docs/testing-strategy.md) | Unit, component, and e2e testing |
+| [deployment.md](docs/deployment.md) | GitHub Pages, iOS/Android release |
+| [accessibility-checklist.md](docs/accessibility-checklist.md) | WCAG-oriented checklist |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | PR checklist and CI requirements |
+
+---
 
 ## Author
 
-Jeffry — Jublia Front End Assessment
+**Jeffry** — [GitHub @alxjeff182](https://github.com/alxjeff182)
+
+Portfolio project showcasing modern Angular + Ionic + Capacitor development with real-world API integration, design-system discipline, and automated quality gates.
