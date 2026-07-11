@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { LanguageService } from '../../../core/services/language.service';
 import { formatPokemonName } from '../../../core/models/pokemon.model';
 
 export interface StatRadarPoint {
@@ -23,16 +24,19 @@ const STAT_ORDER = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatRadarChartComponent {
+  private readonly lang = inject(LanguageService);
+
   @Input({ required: true }) stats!: StatRadarPoint[];
   @Input() max = 255;
   @Input() color = 'var(--jublia-color-primary)';
   @Input() compact = false;
 
   get chartAriaLabel(): string {
+    this.lang.locale();
     const summary = this.orderedStats
       .map((stat) => `${this.shortLabel(stat.name)} ${stat.value}`)
       .join(', ');
-    return `Base stats radar chart: ${summary}`;
+    return this.lang.t('detail.radarChartAria', { summary });
   }
 
   get chartSize(): number {
@@ -97,15 +101,13 @@ export class StatRadarChartComponent {
   }
 
   shortLabel(name: string): string {
-    const labels: Record<string, string> = {
-      hp: 'HP',
-      attack: 'ATK',
-      defense: 'DEF',
-      'special-attack': 'SpA',
-      'special-defense': 'SpD',
-      speed: 'SPD',
-    };
-    return labels[name] ?? formatPokemonName(name);
+    this.lang.locale();
+    const key = `statShort.${name}` as const;
+    const translated = this.lang.t(key);
+    if (translated !== key) {
+      return translated;
+    }
+    return formatPokemonName(name);
   }
 
   private angleForIndex(index: number): number {

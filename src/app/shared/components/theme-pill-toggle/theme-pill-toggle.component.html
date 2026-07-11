@@ -1,0 +1,19 @@
+<button
+  type="button"
+  class="theme-pill"
+  [class.theme-pill--dark]="theme.isDark()"
+  [class.theme-pill--compact]="compact"
+  [class.theme-pill--overlay]="overlay"
+  [attr.aria-label]="'header.toggleDarkMode' | translate"
+  [attr.aria-pressed]="theme.isDark()"
+  (click)="onToggle()"
+>
+  <span class="theme-pill__label">
+    {{ (theme.isDark() ? 'header.nightMode' : 'header.dayMode') | translate }}
+  </span>
+  <span class="theme-pill__switch" aria-hidden="true">
+    <span class="theme-pill__thumb">
+      <ion-icon [name]="theme.isDark() ? 'moon-outline' : 'sunny-outline'"></ion-icon>
+    </span>
+  </span>
+</button>

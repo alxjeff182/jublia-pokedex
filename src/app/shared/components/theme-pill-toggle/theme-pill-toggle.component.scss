@@ -1,0 +1,186 @@
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.theme-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 124px;
+  height: 36px;
+  padding: 4px 5px 4px 12px;
+  border: none;
+  border-radius: 999px;
+  background: #ececee;
+  color: #111111;
+  cursor: pointer;
+  transition:
+    background 0.22s ease,
+    color 0.22s ease,
+    padding 0.22s ease;
+}
+
+.theme-pill--dark {
+  background: #111111;
+  color: #ffffff;
+  padding: 4px 12px 4px 5px;
+  flex-direction: row-reverse;
+}
+
+.theme-pill__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: start;
+}
+
+.theme-pill--dark .theme-pill__label {
+  text-align: end;
+}
+
+.theme-pill__switch {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.theme-pill__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #111111;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+}
+
+.theme-pill__thumb ion-icon {
+  font-size: 15px;
+}
+
+.theme-pill--overlay:not(.theme-pill--dark) {
+  background: #e3e3e8;
+}
+
+.theme-pill--compact {
+  min-width: 112px;
+  height: 34px;
+  gap: 8px;
+}
+
+.theme-pill--compact .theme-pill__label {
+  font-size: 0.56rem;
+}
+
+.theme-pill--compact .theme-pill__thumb {
+  width: 26px;
+  height: 26px;
+}
+
+.theme-pill--compact .theme-pill__thumb ion-icon {
+  font-size: 14px;
+}
+
+@media (max-width: 576px) {
+  .theme-pill {
+    min-width: 0;
+    width: auto;
+    height: var(--header-control-height, 38px);
+    padding: 0;
+    gap: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .theme-pill--dark {
+    padding: 0;
+    flex-direction: row;
+    background: transparent;
+  }
+
+  .theme-pill__label {
+    display: none;
+  }
+
+  .theme-pill__switch {
+    position: relative;
+    width: 54px;
+    height: var(--header-control-height, 38px);
+    padding: 3px;
+    border-radius: 999px;
+    background: #c7c7cc;
+    box-sizing: border-box;
+    transition: background 0.22s ease;
+  }
+
+  .theme-pill--dark .theme-pill__switch {
+    background: #48484a;
+  }
+
+  .theme-pill--overlay:not(.theme-pill--dark) .theme-pill__switch {
+    background: #b8b8be;
+  }
+
+  .theme-pill__thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: calc(var(--header-control-height, 38px) - 6px);
+    height: calc(var(--header-control-height, 38px) - 6px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+    transform: translateX(0);
+  }
+
+  .theme-pill--dark .theme-pill__thumb {
+    transform: translateX(16px);
+  }
+
+  .theme-pill__thumb ion-icon {
+    font-size: 15px;
+  }
+
+  .theme-pill--compact .theme-pill__switch {
+    width: 54px;
+    height: var(--header-control-height, 38px);
+  }
+
+  .theme-pill--compact .theme-pill__thumb {
+    width: calc(var(--header-control-height, 38px) - 6px);
+    height: calc(var(--header-control-height, 38px) - 6px);
+  }
+
+  .theme-pill--compact.theme-pill--dark .theme-pill__thumb {
+    transform: translateX(16px);
+  }
+}
+
+@media (max-width: 380px) {
+  .theme-pill__switch,
+  .theme-pill--compact .theme-pill__switch {
+    width: 52px;
+    height: var(--header-control-height, 36px);
+  }
+
+  .theme-pill__thumb,
+  .theme-pill--compact .theme-pill__thumb {
+    width: calc(var(--header-control-height, 36px) - 6px);
+    height: calc(var(--header-control-height, 36px) - 6px);
+  }
+
+  .theme-pill--dark .theme-pill__thumb,
+  .theme-pill--compact.theme-pill--dark .theme-pill__thumb {
+    transform: translateX(16px);
+  }
+}

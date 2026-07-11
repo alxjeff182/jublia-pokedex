@@ -2,6 +2,7 @@ import { NgComponentOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   Type,
   computed,
@@ -35,41 +36,45 @@ import {
   chevronForward,
   chevronUp,
   closeOutline,
+  gitCompareOutline,
   heart,
   searchOutline,
   shareOutline,
 } from 'ionicons/icons';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { getTypeColor } from '../../core/constants/design-tokens';
 import {
   EvolutionNode,
   MoveLearnFilter,
   PokemonDetail,
   PokemonMoveEntry,
-  formatLearnMethod,
   formatPokemonId,
   formatPokemonName,
   getPokemonSprite,
   normalizePokemonMoves,
+  pokemonDetailRoute,
+  toPokemonSlug,
 } from '../../core/models/pokemon.model';
+import { CompareSelectionService } from '../../core/services/compare-selection.service';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { HapticsService } from '../../core/services/haptics.service';
+import { LanguageService } from '../../core/services/language.service';
 import { PokemonService } from '../../core/services/pokemon.service';
+import { SeoService } from '../../core/services/seo.service';
 import { ErrorRetryComponent } from '../../shared/components/error-retry/error-retry.component';
 import { ScreenHeaderComponent } from '../../shared/components/screen-header/screen-header.component';
 import { StatBarComponent } from '../../shared/components/stat-bar/stat-bar.component';
 import type { StatRadarPoint } from '../../shared/components/stat-radar-chart/stat-radar-chart.component';
 import { TypeChipComponent } from '../../shared/components/type-chip/type-chip.component';
+import {
+  LearnMethodPipe,
+  TranslatePipe,
+} from '../../shared/pipes/translate.pipe';
 
-const MOVE_FILTER_OPTIONS: Array<{ id: MoveLearnFilter; label: string }> = [
-  { id: 'all', label: 'All' },
-  { id: 'level-up', label: 'Level Up' },
-  { id: 'machine', label: 'TM / HM' },
-  { id: 'egg', label: 'Egg' },
-  { id: 'tutor', label: 'Tutor' },
-];
+const MOVE_FILTER_IDS: MoveLearnFilter[] = ['all', 'level-up', 'machine', 'egg', 'tutor'];
 
 @Component({
   selector: 'app-pokemon-detail',
@@ -94,6 +99,8 @@ const MOVE_FILTER_OPTIONS: Array<{ id: MoveLearnFilter; label: string }> = [
     NgComponentOutlet,
     ErrorRetryComponent,
     ScreenHeaderComponent,
+    TranslatePipe,
+    LearnMethodPipe,
   ],
   templateUrl: './pokemon-detail.page.html',
   styleUrl: './pokemon-detail.page.scss',
@@ -107,9 +114,47 @@ export class PokemonDetailPage implements OnInit {
   private readonly toastController = inject(ToastController);
   private readonly haptics = inject(HapticsService);
   readonly favorites = inject(FavoritesService);
+  private readonly lang = inject(LanguageService);
+  private readonly seo = inject(SeoService);
+  private readonly compareSelection = inject(CompareSelectionService);
 
-  readonly moveFilterOptions = MOVE_FILTER_OPTIONS;
-  readonly formatLearnMethod = formatLearnMethod;
+  readonly moveFilterOptions = computed(() => {
+    this.lang.locale();
+    return MOVE_FILTER_IDS.map((id) => ({
+      id,
+      label: this.moveFilterLabel(id),
+    }));
+  });
+  readonly formatLearnMethod = (method: string): string =>
+    this.lang.translateLearnMethod(method);
+
+  readonly movesCountLabel = computed(() => {
+    this.lang.locale();
+    const pokemon = this.pokemon();
+    const count = pokemon ? normalizePokemonMoves(pokemon.moves).length : 0;
+    return this.lang.t('detail.movesCount', { count });
+  });
+
+  readonly movesResultLabel = computed(() => {
+    this.lang.locale();
+    return this.lang.t('detail.movesResult', {
+      filtered: this.filteredMoves().length,
+      total: this.moveEntries().length,
+    });
+  });
+
+  readonly movesModalTitle = computed(() => {
+    this.lang.locale();
+    return this.lang.t('detail.movesTitle', { name: this.displayName });
+  });
+
+  readonly favoriteAriaLabel = computed(() => {
+    this.lang.locale();
+    this.pokemon();
+    return this.isFavorite()
+      ? this.lang.t('detail.removeFavorite')
+      : this.lang.t('detail.addFavorite');
+  });
 
   readonly pokemon = signal<PokemonDetail | null>(null);
   readonly evolution = signal<EvolutionNode[]>([]);
@@ -146,6 +191,7 @@ export class PokemonDetailPage implements OnInit {
   constructor() {
     addIcons({
       heart,
+      gitCompareOutline,
       shareOutline,
       chevronBackOutline,
       chevronForward,
@@ -154,6 +200,10 @@ export class PokemonDetailPage implements OnInit {
       searchOutline,
       chevronDown,
       chevronUp,
+    });
+
+    inject(DestroyRef).onDestroy(() => {
+      this.seo.setJsonLd(null);
     });
 
     void import('../../shared/components/stat-radar-chart/stat-radar-chart.component').then(
@@ -167,18 +217,28 @@ export class PokemonDetailPage implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const id = Number(params.get('id'));
-      if (!id) {
-        void this.router.navigateByUrl('/tabs/home');
+      const slug = toPokemonSlug(params.get('slug') ?? '');
+      if (!slug) {
+        void this.router.navigateByUrl('/');
         return;
       }
-      this.loadPokemon(id);
+      this.loadPokemon(slug);
     });
   }
 
   get displayName(): string {
     const pokemon = this.pokemon();
     return pokemon ? formatPokemonName(pokemon.name) : '';
+  }
+
+  get headerTitle(): string {
+    const pokemon = this.pokemon();
+    if (pokemon) {
+      return formatPokemonName(pokemon.name);
+    }
+
+    const slug = toPokemonSlug(this.route.snapshot.paramMap.get('slug') ?? '');
+    return slug ? formatPokemonName(slug) : '';
   }
 
   get displayId(): string {
@@ -220,9 +280,9 @@ export class PokemonDetailPage implements OnInit {
   }
 
   moveLearnSummary(move: PokemonMoveEntry): string {
-    const summary = formatLearnMethod(move.primaryMethod);
+    const summary = this.lang.translateLearnMethod(move.primaryMethod);
     if (move.primaryMethod === 'level-up' && move.minLevel !== null) {
-      return `${summary} · Lv. ${move.minLevel}`;
+      return `${summary} · ${this.lang.t('detail.levelShort')} ${move.minLevel}`;
     }
     return summary;
   }
@@ -268,13 +328,22 @@ export class PokemonDetailPage implements OnInit {
     }
   }
 
+  openCompare(): void {
+    const pokemon = this.pokemon();
+    if (!pokemon) {
+      return;
+    }
+    this.compareSelection.queue('left', pokemon.id);
+    void this.router.navigate(['/compare']);
+  }
+
   goBack(): void {
     if (window.history.length > 1) {
       this.location.back();
       return;
     }
 
-    void this.router.navigateByUrl('/tabs/home');
+    void this.router.navigateByUrl('/');
   }
 
   async sharePokemon(): Promise<void> {
@@ -284,12 +353,20 @@ export class PokemonDetailPage implements OnInit {
     }
 
     const title = this.displayName;
-    const text = `Check out ${title} (${this.displayId}) on JUBLIA Dex!`;
+    const text = this.lang.t('detail.shareText', {
+      name: title,
+      id: this.displayId,
+    });
     const url = window.location.href;
 
     try {
       if (Capacitor.isNativePlatform()) {
-        await Share.share({ title, text, url, dialogTitle: 'Share Pokémon' });
+        await Share.share({
+          title,
+          text,
+          url,
+          dialogTitle: this.lang.t('detail.shareDialogTitle'),
+        });
         return;
       }
 
@@ -299,25 +376,36 @@ export class PokemonDetailPage implements OnInit {
       }
 
       await navigator.clipboard.writeText(`${text}\n${url}`);
-      await this.presentToast('Link copied to clipboard');
+      await this.presentToast(this.lang.t('detail.linkCopied'));
     } catch {
-      await this.presentToast('Unable to share right now');
+      await this.presentToast(this.lang.t('detail.shareFailed'));
     }
   }
 
-  openPokemon(id: number): void {
-    void this.router.navigate(['/tabs/pokemon', id]);
+  openPokemon(name: string): void {
+    void this.router.navigate(pokemonDetailRoute(name));
   }
 
   retry(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (id) {
-      this.loadPokemon(id);
+    const slug = toPokemonSlug(this.route.snapshot.paramMap.get('slug') ?? '');
+    if (slug) {
+      this.loadPokemon(slug);
     }
   }
 
   dismissError(): void {
     this.error.set(false);
+  }
+
+  private moveFilterLabel(id: MoveLearnFilter): string {
+    const keys: Record<MoveLearnFilter, string> = {
+      all: 'detail.filterAll',
+      'level-up': 'detail.filterLevelUp',
+      machine: 'detail.filterMachine',
+      egg: 'detail.filterEgg',
+      tutor: 'detail.filterTutor',
+    };
+    return this.lang.t(keys[id]);
   }
 
   private async presentToast(message: string): Promise<void> {
@@ -329,26 +417,105 @@ export class PokemonDetailPage implements OnInit {
     await toast.present();
   }
 
-  private loadPokemon(id: number): void {
+  private updatePokemonSeo(detail: PokemonDetail, flavor: string): void {
+    const name = formatPokemonName(detail.name);
+    const types = detail.types
+      .map((slot) => this.lang.translateType(slot.type.name))
+      .join(' / ');
+    const height = (detail.height / 10).toFixed(1);
+    const weight = (detail.weight / 10).toFixed(1);
+    const description = this.lang.t('seo.pokemonDetail', {
+      name,
+      types,
+      id: formatPokemonId(detail.id).replace('#', ''),
+      height,
+      weight,
+      flavor: flavor || this.lang.t('seo.pokemonFallback'),
+    });
+    const canonicalUrl = this.seo.buildUrl(`/pokemon/${detail.name}`);
+    const image = getPokemonSprite(detail) ?? undefined;
+    const baseTitle = this.lang.t('titles.app');
+    const fullTitle = `${baseTitle} — ${name}`;
+
+    this.seo.updateTags({
+      title: fullTitle,
+      description,
+      url: canonicalUrl,
+      image,
+      type: 'article',
+    });
+    this.seo.updateCanonical(canonicalUrl);
+    this.seo.setJsonLd({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Thing',
+          name,
+          image,
+          description,
+          url: canonicalUrl,
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: this.lang.t('titles.home'),
+              item: this.seo.buildUrl('/'),
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: this.lang.t('titles.pokemon'),
+              item: this.seo.buildUrl('/'),
+            },
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name,
+              item: canonicalUrl,
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  private loadPokemon(slug: string): void {
     this.loading.set(true);
     this.error.set(false);
     this.abilitiesOpen.set(false);
     this.closeMovesModal();
 
-    forkJoin({
-      detail: this.pokemonService.getPokemonDetail(id),
-      evolution: this.pokemonService.getEvolutionChain(id),
-      flavor: this.pokemonService.getFlavorText(id),
-    }).subscribe({
-      next: ({ detail, evolution }) => {
-        this.pokemon.set(detail);
-        this.evolution.set(evolution);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.pokemonService
+      .getPokemonDetail(slug)
+      .pipe(
+        switchMap((detail) =>
+          forkJoin({
+            detail: of(detail),
+            evolution: this.pokemonService.getEvolutionChain(detail.id),
+            flavor: this.pokemonService.getFlavorText(detail.id),
+          }),
+        ),
+      )
+      .subscribe({
+        next: ({ detail, evolution, flavor }) => {
+          if (detail.name !== slug) {
+            void this.router.navigate(pokemonDetailRoute(detail.name), {
+              replaceUrl: true,
+            });
+          }
+
+          this.pokemon.set(detail);
+          this.evolution.set(evolution);
+          this.loading.set(false);
+          this.updatePokemonSeo(detail, flavor);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        },
+      });
   }
 }

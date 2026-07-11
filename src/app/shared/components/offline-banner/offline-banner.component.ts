@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { IonNote } from '@ionic/angular/standalone';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-offline-banner',
   standalone: true,
-  imports: [IonNote],
+  imports: [IonNote, TranslatePipe],
   template: `
     @if (!online()) {
       <ion-note class="offline-banner" role="status" aria-live="polite">
-        You are offline. Cached Pokémon data may still be available.
+        {{ 'offline.message' | translate }}
       </ion-note>
     }
   `,

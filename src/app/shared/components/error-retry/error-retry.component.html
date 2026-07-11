@@ -9,13 +9,13 @@
       <div class="error-modal-backdrop">
         <div class="error-card">
           <ion-icon name="cloud-offline-outline" color="danger"></ion-icon>
-          <h2>{{ title }}</h2>
+          <h2>{{ title || ('error.title' | translate) }}</h2>
           <ion-text color="medium">
-            <p>{{ message }}</p>
+            <p>{{ message || ('error.message' | translate) }}</p>
           </ion-text>
           <ion-button expand="block" color="primary" (click)="onRetry()">
             <ion-icon slot="start" name="refresh-outline"></ion-icon>
-            Retry
+            {{ 'common.retry' | translate }}
           </ion-button>
         </div>
       </div>
@@ -24,13 +24,13 @@
 } @else {
   <div class="error-state">
     <ion-icon name="cloud-offline-outline" color="danger"></ion-icon>
-    <h2>{{ title }}</h2>
+    <h2>{{ title || ('error.title' | translate) }}</h2>
     <ion-text color="medium">
-      <p>{{ message }}</p>
+      <p>{{ message || ('error.message' | translate) }}</p>
     </ion-text>
     <ion-button color="primary" (click)="onRetry()">
       <ion-icon slot="start" name="refresh-outline"></ion-icon>
-      Retry
+      {{ 'common.retry' | translate }}
     </ion-button>
   </div>
 }

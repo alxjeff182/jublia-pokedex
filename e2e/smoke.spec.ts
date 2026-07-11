@@ -4,8 +4,9 @@ import { mockPokeApi } from './fixtures/pokeapi-mocks';
 
 async function waitForHome(page: Page): Promise<void> {
   await page.goto('/');
-  await page.waitForURL('**/tabs/home', { timeout: 15_000 });
-  await expect(page.locator('app-pokemon-list ion-searchbar.home-searchbar')).toBeVisible();
+  await expect(page.locator('app-pokemon-list ion-searchbar.app-searchbar')).toBeVisible({
+    timeout: 15_000,
+  });
   await expect(page.getByText('Bulbasaur', { exact: true })).toBeVisible();
 }
 
@@ -21,7 +22,7 @@ async function runAxe(page: Page, scope?: string): Promise<void> {
   expect(criticalOrSerious).toEqual([]);
 }
 
-test.describe('JUBLIA Dex smoke flows', () => {
+test.describe('My Pokedex by Jublia AI smoke flows', () => {
   test.beforeEach(async ({ page }) => {
     await mockPokeApi(page);
     await page.addInitScript(() => {
@@ -38,7 +39,7 @@ test.describe('JUBLIA Dex smoke flows', () => {
   test('search filters the Pokémon list', async ({ page }) => {
     await waitForHome(page);
 
-    const searchbar = page.locator('ion-searchbar.home-searchbar');
+    const searchbar = page.locator('ion-searchbar.app-searchbar');
     await searchbar.locator('input').fill('char');
     await expect(page.getByText('Charmander', { exact: true })).toBeVisible();
     await expect(page.getByText('Bulbasaur', { exact: true })).not.toBeVisible();
@@ -53,7 +54,7 @@ test.describe('JUBLIA Dex smoke flows', () => {
       .filter({ hasText: 'Squirtle' })
       .locator('.card-nav')
       .click();
-    await page.waitForURL('**/tabs/pokemon/7');
+    await page.waitForURL('**/pokemon/squirtle');
     await expect(page.locator('app-pokemon-detail').getByRole('heading', { name: 'Squirtle' })).toBeVisible();
     await expect(page.locator('app-pokemon-detail').getByText('#007')).toBeVisible();
     await runAxe(page, 'app-pokemon-detail');
@@ -70,7 +71,7 @@ test.describe('JUBLIA Dex smoke flows', () => {
     );
 
     await page.locator('ion-tab-button[tab="favorites"]').click();
-    await page.waitForURL('**/tabs/favorites');
+    await page.waitForURL('**/favorites');
     await expect(page.getByText('1 favorite')).toBeVisible();
     await expect(
       page.locator('app-favorites app-pokemon-card').filter({ hasText: 'Bulbasaur' }),
@@ -80,36 +81,34 @@ test.describe('JUBLIA Dex smoke flows', () => {
   test('browse type filter applies on home', async ({ page }) => {
     await waitForHome(page);
 
-    await page.locator('ion-tab-button[tab="browse"]').click();
-    await page.waitForURL('**/tabs/browse');
+    await page.getByRole('button', { name: /Browse by type/i }).click();
+    await page.waitForURL('**/browse');
     await expect(page.getByText('Browse Types')).toBeVisible();
 
     await page.getByRole('button', { name: /Fire/i }).click();
-    await page.waitForURL('**/tabs/home?type=fire');
+    await page.waitForURL('**/*type=fire*');
     await expect(page.getByText('Charmander', { exact: true })).toBeVisible();
     await expect(page.getByText('Bulbasaur', { exact: true })).not.toBeVisible();
     await expect(page.locator('ion-chip.type-filter-chip--active', { hasText: 'Fire' })).toBeVisible();
   });
 
-  test('compare two Pokémon from settings', async ({ page }) => {
+  test('compare two Pokémon from tab', async ({ page }) => {
     await waitForHome(page);
 
-    await page.locator('ion-tab-button[tab="settings"]').click();
-    await page.waitForURL('**/tabs/settings');
-    await page.getByRole('listitem').filter({ hasText: 'Compare Pokémon' }).click();
-    await page.waitForURL('**/tabs/compare');
+    await page.locator('ion-tab-button[tab="compare"]').click();
+    await page.waitForURL('**/compare');
 
     const compareSearch = page.locator('app-compare ion-searchbar input');
     await compareSearch.fill('char');
     await expect(page.locator('app-compare').getByText('Charmander', { exact: true })).toBeVisible();
 
-    const charmanderRow = page.locator('app-compare ion-item').filter({ hasText: 'Charmander' });
+    const charmanderRow = page.locator('app-compare .search-result').filter({ hasText: 'Charmander' });
     await charmanderRow.getByRole('button', { name: 'Left' }).click();
     await expect(page.locator('app-compare .compare-card').first().getByText('Charmander', { exact: true })).toBeVisible();
 
     await compareSearch.fill('pika');
     await expect(page.locator('app-compare').getByText('Pikachu', { exact: true })).toBeVisible();
-    const pikachuRow = page.locator('app-compare ion-item').filter({ hasText: 'Pikachu' });
+    const pikachuRow = page.locator('app-compare .search-result').filter({ hasText: 'Pikachu' });
     await pikachuRow.getByRole('button', { name: 'Right' }).click();
     await expect(page.locator('app-compare .compare-card').nth(1).getByText('Pikachu', { exact: true })).toBeVisible();
 
@@ -126,12 +125,12 @@ test.describe('JUBLIA Dex smoke flows', () => {
     await bulbasaurCard.locator('.favorite-btn').click();
 
     await page.locator('ion-tab-button[tab="settings"]').click();
-    await page.waitForURL('**/tabs/settings');
+    await page.waitForURL('**/settings');
     await page.getByRole('button', { name: 'Clear all favorites' }).click();
     await page.locator('ion-alert').getByRole('button', { name: 'Clear all' }).click();
 
     await page.locator('ion-tab-button[tab="favorites"]').click();
-    await page.waitForURL('**/tabs/favorites');
+    await page.waitForURL('**/favorites');
     await expect(page.getByRole('heading', { name: 'No favorites yet' })).toBeVisible();
   });
 });

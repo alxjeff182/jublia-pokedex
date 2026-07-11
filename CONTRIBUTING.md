@@ -1,4 +1,4 @@
-# Contributing to JUBLIA Dex
+# Contributing to My Pokedex by Jublia AI
 
 Thank you for contributing. This project uses Angular 20, Ionic 8, and Capacitor 8 with standalone components. Please read the guidelines below before opening a pull request.
 

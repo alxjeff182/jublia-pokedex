@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.jublia.dex',
-  appName: 'JUBLIA Dex',
+  appName: 'My Pokedex by Jublia AI',
   webDir: 'www',
   plugins: {
     SplashScreen: {

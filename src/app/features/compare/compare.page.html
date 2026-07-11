@@ -1,170 +1,330 @@
 <app-screen-header
-  title="Compare Pokémon"
-  backHref="/tabs/settings"
+  [title]="'compare.title' | translate"
   [showPokeball]="true"
 >
-  <ion-toolbar header-toolbar>
-    <ion-searchbar
-      placeholder="Search Pokémon to compare..."
-      [debounce]="300"
-      (ionInput)="onSearch($event)"
-    ></ion-searchbar>
-  </ion-toolbar>
+  <ion-searchbar
+    header-search
+    class="app-searchbar"
+    mode="ios"
+    [placeholder]="'compare.searchPlaceholder' | translate"
+    showClearButton="focus"
+    [debounce]="300"
+    (ionInput)="onSearch($event)"
+  ></ion-searchbar>
 </app-screen-header>
 
 <ion-content id="main-content" role="main">
   <div class="page-container">
+    <div class="compare-toolbar">
+      <p class="compare-hint">{{ 'compare.selectSideHint' | translate }}</p>
+      <ion-button
+        class="surprise-button"
+        fill="outline"
+        size="small"
+        color="primary"
+        [disabled]="randomizing()"
+        (click)="pickRandomMatchup()"
+      >
+        @if (randomizing()) {
+          <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+        } @else {
+          <ion-icon slot="start" name="shuffle-outline" aria-hidden="true"></ion-icon>
+        }
+        {{ 'compare.surpriseMatchup' | translate }}
+      </ion-button>
+    </div>
+
     @if (searching()) {
       <div class="loading-wrap" aria-live="polite">
         <ion-spinner name="crescent" color="primary"></ion-spinner>
-        <span class="sr-only">Searching Pokémon</span>
+        <span class="sr-only">{{ 'compare.searchingSr' | translate }}</span>
       </div>
     }
 
     @if (searchResults().length > 0) {
-      <ion-list class="search-results">
-        @for (item of searchResults(); track item.id) {
-          <ion-item>
-            <ion-label>{{ formatPokemonName(item.name) }}</ion-label>
-            <ion-button slot="end" fill="outline" size="small" (click)="selectPokemon('left', item.id)">
-              Left
-            </ion-button>
-            <ion-button slot="end" fill="outline" size="small" (click)="selectPokemon('right', item.id)">
-              Right
-            </ion-button>
-          </ion-item>
+      <div class="search-results" role="listbox" [attr.aria-label]="'compare.searchPlaceholder' | translate">
+        @for (item of searchResults(); track item.id; let index = $index) {
+          <button
+            type="button"
+            class="search-result"
+            role="option"
+            [style.animation-delay.ms]="index * 60"
+            [attr.aria-label]="'compare.addToSide' | translate: { side: activeSideLabel() }"
+            (click)="assignToActive(item.id)"
+          >
+            <img
+              class="search-result__sprite"
+              [src]="item.sprite || 'assets/icon/favicon.png'"
+              [alt]="formatPokemonName(item.name)"
+            />
+            <span class="search-result__meta">
+              <strong>{{ formatPokemonName(item.name) }}</strong>
+              <span>{{ formatPokemonId(item.id) }}</span>
+            </span>
+            <span class="search-result__actions" (click)="$event.stopPropagation()">
+              <ion-button
+                fill="outline"
+                size="small"
+                [color]="activeSide() === 'left' ? 'primary' : 'medium'"
+                (click)="selectPokemon('left', item.id)"
+              >
+                {{ 'compare.left' | translate }}
+              </ion-button>
+              <ion-button
+                fill="outline"
+                size="small"
+                [color]="activeSide() === 'right' ? 'primary' : 'medium'"
+                (click)="selectPokemon('right', item.id)"
+              >
+                {{ 'compare.right' | translate }}
+              </ion-button>
+            </span>
+          </button>
         }
-      </ion-list>
+      </div>
     }
 
-    <div class="compare-layout">
-      <section class="compare-card">
+    @if (bothSelected()) {
+      <div class="duel-banner" [class.duel-banner--pulse]="duelPulse() > 0" [attr.data-pulse]="duelPulse()">
+        <ion-icon name="flash-outline" aria-hidden="true"></ion-icon>
+        <span>{{ overallWinnerLabel() }}</span>
+        @if (overallWinnerSide() !== 'tie') {
+          <ion-icon name="trophy-outline" aria-hidden="true"></ion-icon>
+        }
+      </div>
+    }
+
+    <div class="compare-layout" [class.compare-layout--duel]="bothSelected()">
+      <section
+        class="compare-card"
+        [class.compare-card--active]="activeSide() === 'left'"
+        [class.compare-card--filled]="!!leftPokemon()"
+        [class.compare-card--empty]="!leftPokemon() && !loadingLeft()"
+        [class.compare-card--champion]="overallWinnerSide() === 'left'"
+        [style.--card-accent]="primaryTypeColor(leftPokemon())"
+        role="button"
+        tabindex="0"
+        [attr.aria-pressed]="activeSide() === 'left'"
+        [attr.aria-label]="'compare.left' | translate"
+        (click)="focusSide('left')"
+        (keydown.enter)="focusSide('left')"
+        (keydown.space)="$event.preventDefault(); focusSide('left')"
+      >
         <div class="compare-header">
-          <h3>Left</h3>
+          <div class="compare-header__label">
+            <h3>{{ 'compare.left' | translate }}</h3>
+            @if (activeSide() === 'left') {
+              <span class="active-badge">{{ 'compare.activeSide' | translate }}</span>
+            }
+          </div>
           @if (leftPokemon()) {
-            <ion-button fill="clear" size="small" color="medium" (click)="clear('left')">Clear</ion-button>
+            <ion-button fill="clear" size="small" color="medium" (click)="clear('left', $event)">
+              {{ 'common.clear' | translate }}
+            </ion-button>
           }
         </div>
+
+        @if (bothSelected()) {
+          <span class="win-score" [class.win-score--leading]="matchupScore().left > matchupScore().right">
+            {{ winsLabel('left') }}
+          </span>
+        }
+
         @if (loadingLeft()) {
-          <ion-spinner name="crescent" aria-label="Loading left Pokémon"></ion-spinner>
+          <ion-spinner name="crescent" [attr.aria-label]="'compare.loadingLeft' | translate"></ion-spinner>
         } @else if (errorLeft()) {
           <app-error-retry
             presentation="inline"
-            title="Could not load Pokémon"
+            [title]="'compare.loadError' | translate"
             (retry)="retry('left')"
             (dismiss)="errorLeft.set(false)"
           ></app-error-retry>
         } @else if (leftPokemon(); as pokemon) {
-          <img [src]="getSprite(pokemon) || 'assets/icon/favicon.png'" [alt]="pokemon.name" />
-          <span class="compare-id">{{ formatPokemonId(pokemon.id) }}</span>
-          <h4>{{ formatPokemonName(pokemon.name) }}</h4>
-          <div class="type-row">
-            @for (type of pokemon.types; track type.type.name) {
-              <app-type-chip [type]="type.type.name"></app-type-chip>
-            }
+          <div class="compare-card__body compare-card__body--pop">
+            <div class="sprite-stage">
+              <span class="sprite-glow" aria-hidden="true"></span>
+              <img [src]="getSprite(pokemon) || 'assets/icon/favicon.png'" [alt]="pokemon.name" />
+            </div>
+            <span class="compare-id">{{ formatPokemonId(pokemon.id) }}</span>
+            <h4>{{ formatPokemonName(pokemon.name) }}</h4>
+            <div class="type-row">
+              @for (type of pokemon.types; track type.type.name) {
+                <app-type-chip [type]="type.type.name"></app-type-chip>
+              }
+            </div>
           </div>
         } @else {
-          <p class="placeholder">Select a Pokémon</p>
+          <p class="placeholder">{{ 'compare.selectPokemon' | translate }}</p>
         }
       </section>
 
-      <div class="compare-vs" aria-hidden="true">vs</div>
+      <div class="compare-vs-wrap">
+        <div class="compare-vs" [class.compare-vs--live]="bothSelected()" aria-hidden="true">
+          <span>vs</span>
+        </div>
+        @if (bothSelected()) {
+          <ion-button class="swap-button" fill="clear" size="small" color="primary" (click)="swapSides()">
+            <ion-icon slot="start" name="swap-horizontal-outline" aria-hidden="true"></ion-icon>
+            {{ 'compare.swapSides' | translate }}
+          </ion-button>
+        }
+      </div>
 
-      <section class="compare-card">
+      <section
+        class="compare-card"
+        [class.compare-card--active]="activeSide() === 'right'"
+        [class.compare-card--filled]="!!rightPokemon()"
+        [class.compare-card--empty]="!rightPokemon() && !loadingRight()"
+        [class.compare-card--champion]="overallWinnerSide() === 'right'"
+        [style.--card-accent]="primaryTypeColor(rightPokemon())"
+        role="button"
+        tabindex="0"
+        [attr.aria-pressed]="activeSide() === 'right'"
+        [attr.aria-label]="'compare.right' | translate"
+        (click)="focusSide('right')"
+        (keydown.enter)="focusSide('right')"
+        (keydown.space)="$event.preventDefault(); focusSide('right')"
+      >
         <div class="compare-header">
-          <h3>Right</h3>
+          <div class="compare-header__label">
+            <h3>{{ 'compare.right' | translate }}</h3>
+            @if (activeSide() === 'right') {
+              <span class="active-badge">{{ 'compare.activeSide' | translate }}</span>
+            }
+          </div>
           @if (rightPokemon()) {
-            <ion-button fill="clear" size="small" color="medium" (click)="clear('right')">Clear</ion-button>
+            <ion-button fill="clear" size="small" color="medium" (click)="clear('right', $event)">
+              {{ 'common.clear' | translate }}
+            </ion-button>
           }
         </div>
+
+        @if (bothSelected()) {
+          <span class="win-score" [class.win-score--leading]="matchupScore().right > matchupScore().left">
+            {{ winsLabel('right') }}
+          </span>
+        }
+
         @if (loadingRight()) {
-          <ion-spinner name="crescent" aria-label="Loading right Pokémon"></ion-spinner>
+          <ion-spinner name="crescent" [attr.aria-label]="'compare.loadingRight' | translate"></ion-spinner>
         } @else if (errorRight()) {
           <app-error-retry
             presentation="inline"
-            title="Could not load Pokémon"
+            [title]="'compare.loadError' | translate"
             (retry)="retry('right')"
             (dismiss)="errorRight.set(false)"
           ></app-error-retry>
         } @else if (rightPokemon(); as pokemon) {
-          <img [src]="getSprite(pokemon) || 'assets/icon/favicon.png'" [alt]="pokemon.name" />
-          <span class="compare-id">{{ formatPokemonId(pokemon.id) }}</span>
-          <h4>{{ formatPokemonName(pokemon.name) }}</h4>
-          <div class="type-row">
-            @for (type of pokemon.types; track type.type.name) {
-              <app-type-chip [type]="type.type.name"></app-type-chip>
-            }
+          <div class="compare-card__body compare-card__body--pop">
+            <div class="sprite-stage">
+              <span class="sprite-glow" aria-hidden="true"></span>
+              <img [src]="getSprite(pokemon) || 'assets/icon/favicon.png'" [alt]="pokemon.name" />
+            </div>
+            <span class="compare-id">{{ formatPokemonId(pokemon.id) }}</span>
+            <h4>{{ formatPokemonName(pokemon.name) }}</h4>
+            <div class="type-row">
+              @for (type of pokemon.types; track type.type.name) {
+                <app-type-chip [type]="type.type.name"></app-type-chip>
+              }
+            </div>
           </div>
         } @else {
-          <p class="placeholder">Select a Pokémon</p>
+          <p class="placeholder">{{ 'compare.selectPokemon' | translate }}</p>
         }
       </section>
     </div>
 
     @if (leftPokemon() && rightPokemon()) {
-      <div class="physical-compare" aria-live="polite">
-        <div class="physical-compare-row">
-          <strong [class.winner]="isHeightWinner('left')">
-            {{ formatHeight(leftPokemon()) }}
-            @if (isHeightWinner('left')) {
-              <span class="winner-badge">Higher</span>
-            }
-          </strong>
-          <span>Height</span>
-          <strong [class.winner]="isHeightWinner('right')">
-            {{ formatHeight(rightPokemon()) }}
-            @if (isHeightWinner('right')) {
-              <span class="winner-badge">Higher</span>
-            }
-          </strong>
-        </div>
-        <div class="physical-compare-row">
-          <strong [class.winner]="isWeightWinner('left')">
-            {{ formatWeight(leftPokemon()) }}
-            @if (isWeightWinner('left')) {
-              <span class="winner-badge">Higher</span>
-            }
-          </strong>
-          <span>Weight</span>
-          <strong [class.winner]="isWeightWinner('right')">
-            {{ formatWeight(rightPokemon()) }}
-            @if (isWeightWinner('right')) {
-              <span class="winner-badge">Higher</span>
-            }
-          </strong>
-        </div>
-      </div>
-
-      <h2 class="section-title">Stat Comparison</h2>
-      @for (statName of getStatNames(); track statName) {
-        <div class="compare-stat-block">
-          <div class="compare-stat-values">
-            <strong [class.winner]="isStatWinner('left', statName)">
-              {{ getStatValue(leftPokemon(), statName) }}
-              @if (isStatWinner('left', statName)) {
-                <span class="winner-badge">Higher</span>
-              }
+      <section class="duel-panel" [attr.data-pulse]="duelPulse()">
+        <div class="bst-battle" aria-live="polite">
+          <div class="bst-battle__labels">
+            <strong [class.winner]="isTotalWinner('left')">
+              {{ formatPokemonName(leftPokemon()!.name) }}
             </strong>
-            <span>{{ formatPokemonName(statName) }}</span>
-            <strong [class.winner]="isStatWinner('right', statName)">
-              {{ getStatValue(rightPokemon(), statName) }}
-              @if (isStatWinner('right', statName)) {
-                <span class="winner-badge">Higher</span>
-              }
+            <span>{{ 'compare.totalStats' | translate }}</span>
+            <strong [class.winner]="isTotalWinner('right')">
+              {{ formatPokemonName(rightPokemon()!.name) }}
             </strong>
           </div>
-          <app-stat-bar
-            [name]="statName"
-            [value]="getStatValue(leftPokemon(), statName)"
-            [highlight]="isStatWinner('left', statName)"
-          ></app-stat-bar>
-          <app-stat-bar
-            [name]="statName"
-            [value]="getStatValue(rightPokemon(), statName)"
-            [highlight]="isStatWinner('right', statName)"
-          ></app-stat-bar>
+          <div class="bst-battle__bar">
+            <span
+              class="bst-battle__fill bst-battle__fill--left"
+              [style.width.%]="leftBstShare()"
+              [style.background]="primaryTypeColor(leftPokemon())"
+            ></span>
+            <span
+              class="bst-battle__fill bst-battle__fill--right"
+              [style.width.%]="100 - leftBstShare()"
+              [style.background]="primaryTypeColor(rightPokemon())"
+            ></span>
+          </div>
+          <div class="bst-battle__values">
+            <strong [class.winner]="isTotalWinner('left')">{{ getTotalStats(leftPokemon()) }}</strong>
+            <span>{{ matchupScore().left }} - {{ matchupScore().tied }} - {{ matchupScore().right }}</span>
+            <strong [class.winner]="isTotalWinner('right')">{{ getTotalStats(rightPokemon()) }}</strong>
+          </div>
         </div>
-      }
+
+        <app-compare-radar-chart
+          [leftStats]="radarStats(leftPokemon()!)"
+          [rightStats]="radarStats(rightPokemon()!)"
+          [leftColor]="primaryTypeColor(leftPokemon())"
+          [rightColor]="primaryTypeColor(rightPokemon())"
+        />
+
+        <p class="stat-focus-hint">{{ 'compare.tapStatHint' | translate }}</p>
+
+        <div class="physical-compare">
+          <div class="physical-compare-row">
+            <strong [class.winner]="isHeightWinner('left')">{{ formatHeight(leftPokemon()) }}</strong>
+            <span>{{ 'compare.height' | translate }}</span>
+            <strong [class.winner]="isHeightWinner('right')">{{ formatHeight(rightPokemon()) }}</strong>
+          </div>
+          <div class="physical-compare-row">
+            <strong [class.winner]="isWeightWinner('left')">{{ formatWeight(leftPokemon()) }}</strong>
+            <span>{{ 'compare.weight' | translate }}</span>
+            <strong [class.winner]="isWeightWinner('right')">{{ formatWeight(rightPokemon()) }}</strong>
+          </div>
+        </div>
+
+        <h2 class="section-title">{{ 'compare.statComparison' | translate }}</h2>
+        @for (statName of getStatNames(); track statName; let index = $index) {
+          <button
+            type="button"
+            class="compare-stat-block"
+            [class.compare-stat-block--focused]="focusedStat() === statName"
+            [class.compare-stat-block--dimmed]="focusedStat() && focusedStat() !== statName"
+            [class.compare-stat-block--winner-left]="isStatWinner('left', statName)"
+            [class.compare-stat-block--winner-right]="isStatWinner('right', statName)"
+            [style.animation-delay.ms]="index * 70"
+            (click)="toggleStatFocus(statName)"
+          >
+            <div class="compare-stat-values">
+              <strong [class.winner]="isStatWinner('left', statName)">
+                {{ getStatValue(leftPokemon(), statName) }}
+              </strong>
+              <span>{{ statName | statName }}</span>
+              <strong [class.winner]="isStatWinner('right', statName)">
+                {{ getStatValue(rightPokemon(), statName) }}
+              </strong>
+            </div>
+            <div class="compare-stat-bars">
+              <app-stat-bar
+                [name]="statName"
+                [value]="getStatValue(leftPokemon(), statName)"
+                [highlight]="isStatWinner('left', statName)"
+                [compact]="true"
+              ></app-stat-bar>
+              <app-stat-bar
+                [name]="statName"
+                [value]="getStatValue(rightPokemon(), statName)"
+                [highlight]="isStatWinner('right', statName)"
+                [compact]="true"
+              ></app-stat-bar>
+            </div>
+          </button>
+        }
+      </section>
     }
   </div>
 </ion-content>

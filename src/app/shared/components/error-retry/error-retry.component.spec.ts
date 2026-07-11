@@ -28,8 +28,9 @@ describe('ErrorRetryComponent', () => {
     expect(component.dismiss.emit).toHaveBeenCalled();
   });
 
-  it('uses default title and message', () => {
-    expect(component.title).toBe('Connection error');
+  it('uses empty defaults for title and message', () => {
+    expect(component.title).toBe('');
+    expect(component.message).toBe('');
     expect(component.presentation).toBe('modal');
   });
 });

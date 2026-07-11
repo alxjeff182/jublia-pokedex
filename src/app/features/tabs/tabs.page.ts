@@ -9,18 +9,19 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  grid,
+  gitCompareOutline,
   heart,
   home,
   settings,
 } from 'ionicons/icons';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { HapticsService } from '../../core/services/haptics.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-tabs',
   standalone: true,
-  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonBadge],
+  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonBadge, TranslatePipe],
   templateUrl: './tabs.page.html',
   styleUrl: './tabs.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,7 +33,7 @@ export class TabsPage {
   readonly favoriteCount = computed(() => this.favorites.getFavoriteIds().length);
 
   constructor() {
-    addIcons({ home, grid, heart, settings });
+    addIcons({ home, gitCompareOutline, heart, settings });
   }
 
   onTabChange(): void {

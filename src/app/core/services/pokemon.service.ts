@@ -39,7 +39,7 @@ export class PokemonService {
   private readonly typeService = inject(PokemonTypeService);
 
   private nameIndex$?: Observable<PokemonListEntry[]>;
-  private readonly detailCache = new Map<number, Observable<PokemonDetail>>();
+  private readonly detailCache = new Map<string, Observable<PokemonDetail>>();
   private readonly batchSize = 5;
 
   getNameIndex(): Observable<PokemonListEntry[]> {
@@ -118,17 +118,18 @@ export class PokemonService {
     );
   }
 
-  getPokemonDetail(id: number): Observable<PokemonDetail> {
-    const cached = this.detailCache.get(id);
+  getPokemonDetail(ref: string | number): Observable<PokemonDetail> {
+    const key = String(ref).toLowerCase();
+    const cached = this.detailCache.get(key);
     if (cached) {
       return cached;
     }
 
     const request$ = this.http
-      .get<PokemonDetail>(`${environment.pokeApiUrl}/pokemon/${id}`)
+      .get<PokemonDetail>(`${environment.pokeApiUrl}/pokemon/${key}`)
       .pipe(shareReplay(1));
 
-    this.detailCache.set(id, request$);
+    this.detailCache.set(key, request$);
     return request$;
   }
 

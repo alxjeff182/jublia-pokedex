@@ -1,66 +1,90 @@
-<app-screen-header title="Settings" [showPokeball]="true" />
+<app-screen-header [title]="'settings.title' | translate" [showPokeball]="true" />
 
 <ion-content id="main-content" role="main">
   <div class="page-container">
     <div class="settings-hero">
-      <img src="assets/icon/pokeball.png" alt="JUBLIA Dex" width="56" height="56" />
-      <h2>JUBLIA Dex</h2>
-      <p>Premium Pokédex Experience</p>
-      <ion-note>Version {{ appVersion }}</ion-note>
+      <img src="assets/icon/pokeball.png" [alt]="'header.brandTitle' | translate" width="56" height="56" />
+      <h2>{{ 'header.brandTitle' | translate }}</h2>
+      <p>{{ 'settings.tagline' | translate }}</p>
+      <ion-note>{{ 'settings.version' | translate }} {{ appVersion }}</ion-note>
     </div>
 
+    <app-compare-promo
+      titleKey="compare.promoSettingsTitle"
+      bodyKey="compare.promoSettingsBody"
+    />
+
     <ion-list class="settings-list" lines="full">
-      <ion-item button detail (click)="openCompare()">
-        <ion-label>Compare Pokémon</ion-label>
+      <ion-item class="language-item">
+        <ion-label>
+          <h3>{{ 'settings.language' | translate }}</h3>
+          <p>{{ 'settings.languageHint' | translate }}</p>
+        </ion-label>
+        <div slot="end" class="settings-lang-switch" role="group" [attr.aria-label]="'common.language' | translate">
+          <ion-button
+            size="small"
+            [fill]="lang.locale() === 'en' ? 'solid' : 'outline'"
+            (click)="setLocale('en')"
+          >
+            EN
+          </ion-button>
+          <ion-button
+            size="small"
+            [fill]="lang.locale() === 'id' ? 'solid' : 'outline'"
+            (click)="setLocale('id')"
+          >
+            ID
+          </ion-button>
+        </div>
       </ion-item>
 
       <ion-item class="theme-item">
         <ion-label>
-          <h3>Dark mode</h3>
-          <p>Switch between light and dark appearance</p>
+          <h3>{{ 'settings.darkMode' | translate }}</h3>
+          <p>{{ 'settings.darkModeHint' | translate }}</p>
         </ion-label>
         <ion-toggle
           slot="end"
           [checked]="theme.isDark()"
           (ionChange)="onThemeToggle($event)"
-          aria-label="Toggle dark mode"
+          [attr.aria-label]="'header.toggleDarkMode' | translate"
         ></ion-toggle>
       </ion-item>
 
       <ion-item>
         <ion-label>
-          <h3>Haptic feedback</h3>
-          <p>Vibration on favorites, filters, and tab changes</p>
+          <h3>{{ 'settings.hapticFeedback' | translate }}</h3>
+          <p>{{ 'settings.hapticHint' | translate }}</p>
         </ion-label>
         <ion-toggle
           slot="end"
           [checked]="hapticsEnabled()"
           (ionChange)="onHapticsToggle($event)"
-          aria-label="Toggle haptic feedback"
+          [attr.aria-label]="'settings.toggleHaptics' | translate"
         ></ion-toggle>
       </ion-item>
 
       <ion-item>
         <ion-label>
-          <h3>Clear favorites</h3>
-          <p>Remove all Pokémon from your favorites list</p>
+          <h3>{{ 'settings.clearFavorites' | translate }}</h3>
+          <p>{{ 'settings.clearFavoritesHint' | translate }}</p>
         </ion-label>
         <ion-button
           slot="end"
           fill="outline"
           color="danger"
           [disabled]="clearing()"
-          aria-label="Clear all favorites"
+          [attr.aria-label]="'settings.clearFavoritesAria' | translate"
           (click)="clearFavorites()"
         >
-          Clear
+          {{ 'common.clear' | translate }}
         </ion-button>
       </ion-item>
     </ion-list>
 
     <p class="settings-status" aria-live="polite">
       @if (clearing()) {
-        Clearing favorites...
+        {{ 'settings.clearing' | translate }}
       }
     </p>
   </div>

@@ -8,22 +8,62 @@
   <ion-toolbar [class.brand-toolbar]="isBrand" [class.overlay-toolbar]="isOverlay">
     @if (isOverlay) {
       <div class="overlay-nav">
-        @if (hasBack) {
-          <button type="button" class="nav-circle" (click)="onBackClick()" aria-label="Back">
-            <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
-          </button>
+        <div class="overlay-nav__start">
+          @if (hasBack) {
+            <button
+              type="button"
+              class="nav-circle"
+              (click)="onBackClick()"
+              [attr.aria-label]="'common.back' | translate"
+            >
+              <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+            </button>
+          } @else {
+            <span class="overlay-nav__spacer" aria-hidden="true"></span>
+          }
+        </div>
+
+        @if (title) {
+          <p class="overlay-nav__title">{{ title }}</p>
         } @else {
-          <span class="overlay-nav__spacer" aria-hidden="true"></span>
+          <span class="overlay-nav__title-spacer" aria-hidden="true"></span>
         }
 
         <div class="overlay-nav__end">
           <ng-content select="[header-end]" />
+          <div class="header-end-switches header-end-switches--overlay">
+            @if (showLanguageToggle) {
+              <div class="lang-switch lang-switch--overlay" role="group" [attr.aria-label]="'common.language' | translate">
+                <button
+                  type="button"
+                  class="lang-switch__btn"
+                  [class.lang-switch__btn--active]="lang.locale() === 'en'"
+                  [attr.aria-pressed]="lang.locale() === 'en'"
+                  (click)="setLocale('en')"
+                >
+                  EN
+                </button>
+                <button
+                  type="button"
+                  class="lang-switch__btn"
+                  [class.lang-switch__btn--active]="lang.locale() === 'id'"
+                  [attr.aria-pressed]="lang.locale() === 'id'"
+                  (click)="setLocale('id')"
+                >
+                  ID
+                </button>
+              </div>
+            }
+            @if (showThemeToggle) {
+              <app-theme-pill-toggle [overlay]="true" />
+            }
+          </div>
           @if (rightIcon) {
             <button
               type="button"
               class="nav-circle"
               (click)="onRightClick()"
-              [attr.aria-label]="rightAriaLabel || 'Action'"
+              [attr.aria-label]="rightAriaLabel || ('common.action' | translate)"
             >
               <ion-icon [name]="rightIcon" aria-hidden="true"></ion-icon>
             </button>
@@ -31,123 +71,143 @@
         </div>
       </div>
     } @else {
-      <ng-content select="[header-start]" />
-
-      @if (hasBack) {
-        <ion-buttons slot="start">
-          <ion-button fill="clear" class="back-button" (click)="onBackClick()" aria-label="Back">
-            <ion-icon slot="icon-only" name="chevron-back-outline" aria-hidden="true"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      }
-
-      @if (isBrand) {
-        <div class="header-brand">
-          <h1 class="header-title">JUBLIA Dex</h1>
-          <div class="header-brand__actions">
-            @if (showThemeToggle) {
-              <div class="theme-switch" role="group" aria-label="Theme appearance">
-                <ion-icon
-                  class="theme-switch__icon theme-switch__icon--sun"
-                  [class.theme-switch__icon--active]="!theme.isDark()"
-                  name="sunny"
-                  aria-hidden="true"
-                ></ion-icon>
-                <ion-toggle
-                  class="theme-switch__toggle"
-                  [checked]="theme.isDark()"
-                  (ionChange)="onThemeToggle($event)"
-                  aria-label="Toggle dark mode"
-                ></ion-toggle>
-                <ion-icon
-                  class="theme-switch__icon theme-switch__icon--moon"
-                  [class.theme-switch__icon--active]="theme.isDark()"
-                  name="moon"
-                  aria-hidden="true"
-                ></ion-icon>
+      <div class="header-stack">
+        @if (isBrand) {
+          <div class="header-brand">
+            <h1 class="header-title">
+              <span class="header-title__line">{{ 'header.brandTitlePrimary' | translate }}</span>
+              <span class="header-title__line">{{ 'header.brandTitleSecondary' | translate }}</span>
+            </h1>
+            <div class="header-brand__actions">
+              <div class="header-brand__switches">
+                @if (showLanguageToggle) {
+                  <div class="lang-switch" role="group" [attr.aria-label]="'common.language' | translate">
+                    <button
+                      type="button"
+                      class="lang-switch__btn"
+                      [class.lang-switch__btn--active]="lang.locale() === 'en'"
+                      [attr.aria-pressed]="lang.locale() === 'en'"
+                      (click)="setLocale('en')"
+                    >
+                      EN
+                    </button>
+                    <button
+                      type="button"
+                      class="lang-switch__btn"
+                      [class.lang-switch__btn--active]="lang.locale() === 'id'"
+                      [attr.aria-pressed]="lang.locale() === 'id'"
+                      (click)="setLocale('id')"
+                    >
+                      ID
+                    </button>
+                  </div>
+                }
+                @if (showThemeToggle) {
+                  <app-theme-pill-toggle />
+                }
               </div>
+              <button
+                type="button"
+                class="header-pokeball-button"
+                (click)="onPokeballClick()"
+                [attr.aria-label]="'header.goHome' | translate"
+              >
+                <img
+                  class="header-pokeball"
+                  src="assets/icon/pokeball.png"
+                  alt=""
+                  width="36"
+                  height="36"
+                />
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="header-row">
+            <ng-content select="[header-start]" />
+
+            @if (hasBack) {
+              <ion-buttons slot="start">
+                <ion-button
+                  fill="clear"
+                  class="back-button"
+                  (click)="onBackClick()"
+                  [attr.aria-label]="'common.back' | translate"
+                >
+                  <ion-icon slot="icon-only" name="chevron-back-outline" aria-hidden="true"></ion-icon>
+                </ion-button>
+              </ion-buttons>
             }
-            <button
-              type="button"
-              class="header-pokeball-button"
-              (click)="onPokeballClick()"
-              aria-label="Go to Home"
-            >
-              <img
-                class="header-pokeball"
-                src="assets/icon/pokeball.png"
-                alt=""
-                width="40"
-                height="40"
-              />
-            </button>
+
+            <ng-content select="[header-title]" />
+            @if (title) {
+              <p class="toolbar-title" [class.toolbar-title--has-back]="hasBack">{{ title }}</p>
+            }
+
+            <ng-content select="[header-end]" />
+
+            <div class="header-row__actions">
+              @if (showLanguageToggle || showThemeToggle) {
+                <div class="header-end-switches">
+                  @if (showLanguageToggle) {
+                    <div class="lang-switch lang-switch--compact" role="group" [attr.aria-label]="'common.language' | translate">
+                      <button
+                        type="button"
+                        class="lang-switch__btn"
+                        [class.lang-switch__btn--active]="lang.locale() === 'en'"
+                        [attr.aria-pressed]="lang.locale() === 'en'"
+                        (click)="setLocale('en')"
+                      >
+                        EN
+                      </button>
+                      <button
+                        type="button"
+                        class="lang-switch__btn"
+                        [class.lang-switch__btn--active]="lang.locale() === 'id'"
+                        [attr.aria-pressed]="lang.locale() === 'id'"
+                        (click)="setLocale('id')"
+                      >
+                        ID
+                      </button>
+                    </div>
+                  }
+                  @if (showThemeToggle) {
+                    <app-theme-pill-toggle [compact]="true" />
+                  }
+                </div>
+              }
+
+              @if (rightIcon) {
+                <ion-button
+                  fill="clear"
+                  class="action-button"
+                  (click)="onRightClick()"
+                  [attr.aria-label]="rightAriaLabel || ('common.action' | translate)"
+                >
+                  <ion-icon slot="icon-only" [name]="rightIcon" aria-hidden="true"></ion-icon>
+                </ion-button>
+              } @else if (showPokeball) {
+                <button
+                  type="button"
+                  class="pokeball-button"
+                  (click)="onPokeballClick()"
+                  [attr.aria-label]="'header.goHome' | translate"
+                >
+                  <img
+                    class="header-pokeball"
+                    src="assets/icon/pokeball.png"
+                    alt=""
+                    width="40"
+                    height="40"
+                  />
+                </button>
+              }
+            </div>
           </div>
-        </div>
-      } @else {
-        <ng-content select="[header-title]" />
-        @if (title) {
-          <ion-title>{{ title }}</ion-title>
         }
-      }
 
-      <ng-content select="[header-end]" />
-
-      @if (showThemeToggle && !isBrand) {
-        <ion-buttons slot="end">
-          <div class="theme-switch theme-switch--compact" role="group" aria-label="Theme appearance">
-            <ion-icon
-              class="theme-switch__icon theme-switch__icon--sun"
-              [class.theme-switch__icon--active]="!theme.isDark()"
-              name="sunny"
-              aria-hidden="true"
-            ></ion-icon>
-            <ion-toggle
-              class="theme-switch__toggle"
-              [checked]="theme.isDark()"
-              (ionChange)="onThemeToggle($event)"
-              aria-label="Toggle dark mode"
-            ></ion-toggle>
-            <ion-icon
-              class="theme-switch__icon theme-switch__icon--moon"
-              [class.theme-switch__icon--active]="theme.isDark()"
-              name="moon"
-              aria-hidden="true"
-            ></ion-icon>
-          </div>
-        </ion-buttons>
-      }
-
-      @if (rightIcon) {
-        <ion-buttons slot="end">
-          <ion-button
-            fill="clear"
-            class="action-button"
-            (click)="onRightClick()"
-            [attr.aria-label]="rightAriaLabel || 'Action'"
-          >
-            <ion-icon slot="icon-only" [name]="rightIcon" aria-hidden="true"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      } @else if (showPokeball) {
-        <ion-buttons slot="end">
-          <ion-button
-            fill="clear"
-            class="pokeball-button"
-            (click)="onPokeballClick()"
-            aria-label="Go to Home"
-          >
-            <img
-              class="header-pokeball"
-              src="assets/icon/pokeball.png"
-              alt=""
-              width="40"
-              height="40"
-            />
-          </ion-button>
-        </ion-buttons>
-      }
+        <ng-content select="[header-search]" />
+      </div>
     }
   </ion-toolbar>
-
-  <ng-content select="[header-toolbar]" />
 </ion-header>

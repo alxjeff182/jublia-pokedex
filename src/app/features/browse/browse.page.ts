@@ -7,15 +7,15 @@ import { getTypeColor } from '../../core/constants/design-tokens';
 import {
   POKEMON_TYPES,
   PokemonTypeName,
-  formatPokemonName,
 } from '../../core/models/pokemon.model';
 import { HapticsService } from '../../core/services/haptics.service';
 import { ScreenHeaderComponent } from '../../shared/components/screen-header/screen-header.component';
+import { TranslatePipe, TypeNamePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-browse',
   standalone: true,
-  imports: [ScreenHeaderComponent, IonContent, IonIcon],
+  imports: [ScreenHeaderComponent, IonContent, IonIcon, TranslatePipe, TypeNamePipe],
   templateUrl: './browse.page.html',
   styleUrl: './browse.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,10 +31,6 @@ export class BrowsePage {
     addIcons({ chevronForward });
   }
 
-  typeLabel(type: PokemonTypeName): string {
-    return formatPokemonName(type);
-  }
-
   typeColor(type: PokemonTypeName): string {
     return getTypeColor(type);
   }
@@ -43,7 +39,7 @@ export class BrowsePage {
     this.pressedType.set(type);
     void this.haptics.selectionChanged();
     window.setTimeout(() => {
-      void this.router.navigate(['/tabs/home'], {
+      void this.router.navigate(['/'], {
         queryParams: { type },
       });
       this.pressedType.set(null);

@@ -1,0 +1,72 @@
+.compare-radar {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 4px;
+}
+
+svg {
+  width: min(100%, 300px);
+  height: auto;
+  overflow: visible;
+}
+
+.compare-radar__grid {
+  fill: none;
+  stroke: var(--jublia-color-border);
+  stroke-width: 1;
+}
+
+.compare-radar__axis {
+  stroke: var(--jublia-color-border);
+  stroke-width: 1;
+}
+
+.compare-radar__fill--left {
+  fill: color-mix(in srgb, var(--left-color) 28%, transparent);
+}
+
+.compare-radar__fill--right {
+  fill: color-mix(in srgb, var(--right-color) 24%, transparent);
+}
+
+.compare-radar__stroke--left {
+  fill: none;
+  stroke: var(--left-color);
+  stroke-width: 2.5;
+}
+
+.compare-radar__stroke--right {
+  fill: none;
+  stroke: var(--right-color);
+  stroke-width: 2.5;
+  stroke-dasharray: 6 4;
+}
+
+.compare-radar__label {
+  fill: var(--jublia-color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.compare-radar__fill,
+.compare-radar__stroke {
+  transform-origin: center;
+  animation: radar-reveal 0.7s ease forwards;
+}
+
+.compare-radar__fill--right,
+.compare-radar__stroke--right {
+  animation-delay: 0.08s;
+}
+
+@keyframes radar-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

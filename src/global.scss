@@ -82,7 +82,47 @@ ion-card.pokemon-card {
 }
 
 .page-container {
-  padding: 16px;
+  padding: 8px 16px 16px;
+}
+
+.app-searchbar {
+  --background: var(--jublia-search-fill);
+  --border-radius: var(--jublia-search-radius);
+  --box-shadow: none;
+  --icon-color: var(--jublia-color-text-muted);
+  --placeholder-color: var(--jublia-color-text-muted);
+  --placeholder-opacity: 1;
+  --placeholder-font-weight: 400;
+  --color: var(--jublia-color-text);
+  --clear-button-color: var(--jublia-color-text-muted);
+  --cancel-button-color: var(--jublia-color-text-muted);
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  width: 100%;
+  min-height: var(--jublia-search-height);
+  height: var(--jublia-search-height);
+  margin: 0;
+  padding: 0;
+}
+
+ion-searchbar.app-searchbar .searchbar-input-container {
+  min-height: var(--jublia-search-height);
+  height: var(--jublia-search-height);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+ion-searchbar.app-searchbar .searchbar-input {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.app-searchbar.searchbar-has-focus,
+.app-searchbar.ion-focused {
+  --background: color-mix(in srgb, var(--jublia-search-fill) 88%, var(--jublia-color-text-muted));
+  --box-shadow: none;
 }
 
 .section-title {

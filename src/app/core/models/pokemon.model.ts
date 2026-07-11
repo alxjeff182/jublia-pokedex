@@ -235,3 +235,23 @@ export function toCardData(pokemon: PokemonDetail): PokemonCardData {
     types: pokemon.types.map((t) => t.type.name),
   };
 }
+
+export function toPokemonSlug(name: string): string {
+  return name.trim().toLowerCase();
+}
+
+export function isPokemonSlugNumeric(slug: string): boolean {
+  return /^\d+$/.test(slug);
+}
+
+export function isValidPokemonSlug(slug: string): boolean {
+  const normalized = slug.trim().toLowerCase();
+  return (
+    isPokemonSlugNumeric(normalized) ||
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalized)
+  );
+}
+
+export function pokemonDetailRoute(name: string): string[] {
+  return ['/pokemon', toPokemonSlug(name)];
+}

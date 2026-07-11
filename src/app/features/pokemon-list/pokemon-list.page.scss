@@ -1,3 +1,16 @@
+.browse-types-link {
+  min-height: 44px;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: var(--jublia-color-primary);
+  font-size: var(--jublia-font-size-sm);
+  font-weight: var(--jublia-font-weight-bold);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .filters-header {
   display: flex;
   align-items: center;
@@ -19,9 +32,9 @@
   gap: 6px;
   min-height: 44px;
   padding: 0 12px;
-  border: 1px solid color-mix(in srgb, var(--jublia-color-primary) 35%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--jublia-color-primary) 35%, var(--jublia-color-surface));
   border-radius: 9999px;
-  background: color-mix(in srgb, var(--jublia-color-primary) 10%, #ffffff);
+  background: color-mix(in srgb, var(--jublia-color-primary) 10%, var(--jublia-color-surface));
   color: var(--jublia-color-primary);
   font-size: var(--jublia-font-size-sm);
   font-weight: var(--jublia-font-weight-bold);
@@ -73,27 +86,6 @@
   100% {
     transform: scale(1);
   }
-}
-
-.search-toolbar {
-  padding-top: 0;
-  padding-bottom: 8px;
-}
-
-.home-searchbar {
-  --background: var(--jublia-color-border);
-  --border-radius: 9999px;
-  --box-shadow: none;
-  --icon-color: var(--jublia-color-text-muted);
-  --placeholder-color: var(--jublia-color-text-muted);
-  --color: var(--jublia-color-text);
-  padding: 0;
-  transition: --background 0.2s ease;
-}
-
-.home-searchbar.searchbar-has-focus {
-  --background: var(--jublia-color-surface);
-  --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .type-filters {
@@ -290,8 +282,8 @@
   min-height: 34px;
   padding: 0 12px;
   border-radius: 9999px;
-  border: 1px solid #ececf1;
-  background: #ffffff;
+  border: 1px solid var(--jublia-color-border);
+  background: var(--jublia-color-surface);
   color: var(--chip-color, var(--jublia-color-text));
   font-size: var(--jublia-font-size-sm);
   font-weight: var(--jublia-font-weight-semibold);
@@ -313,8 +305,8 @@
 }
 
 .home-empty-chip--suggestion {
-  border-color: color-mix(in srgb, var(--chip-color) 35%, #ececf1);
-  background: color-mix(in srgb, var(--chip-color) 12%, #ffffff);
+  border-color: color-mix(in srgb, var(--chip-color) 35%, var(--jublia-color-border));
+  background: color-mix(in srgb, var(--chip-color) 12%, var(--jublia-color-surface));
 }
 
 .home-empty-chip:active {

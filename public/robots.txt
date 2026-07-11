@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://alxjeff182.github.io/jublia-pokedex/sitemap.xml

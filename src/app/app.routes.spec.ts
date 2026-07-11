@@ -1,30 +1,34 @@
 import { routes } from './app.routes';
 
 describe('app routes', () => {
-  it('redirects root to splash', () => {
-    const root = routes.find((route) => route.path === '');
-    expect(root?.redirectTo).toBe('splash');
+  it('defines splash route', () => {
+    const splash = routes.find((route) => route.path === 'splash');
+    expect(splash?.loadComponent).toBeDefined();
   });
 
-  it('defines splash and tabs routes', () => {
-    const splash = routes.find((route) => route.path === 'splash');
-    const tabs = routes.find((route) => route.path === 'tabs');
-    expect(splash?.loadComponent).toBeDefined();
-    expect(tabs?.loadComponent).toBeDefined();
-    expect(tabs?.children?.length).toBeGreaterThan(0);
+  it('defines tab shell at root with child routes', () => {
+    const shell = routes.find(
+      (route) => route.path === '' && route.loadComponent && route.children,
+    );
+    expect(shell?.loadComponent).toBeDefined();
+    expect(shell?.canActivate?.length).toBe(1);
+    expect(shell?.children?.some((child) => child.path === '')).toBeTrue();
+    expect(shell?.children?.some((child) => child.path === 'browse')).toBeTrue();
   });
 
   it('guards pokemon detail route', () => {
-    const detail = routes
-      .find((route) => route.path === 'tabs')
-      ?.children?.find((child) => child.path === 'pokemon/:id');
+    const shell = routes.find(
+      (route) => route.path === '' && route.loadComponent && route.children,
+    );
+    const detail = shell?.children?.find((child) => child.path === 'pokemon/:slug');
     expect(detail?.canActivate?.length).toBe(1);
   });
 
-  it('redirects legacy compare and pokemon paths', () => {
-    const compare = routes.find((route) => route.path === 'compare');
-    const pokemon = routes.find((route) => route.path === 'pokemon/:id');
-    expect(compare?.redirectTo).toBe('tabs/compare');
-    expect(pokemon?.redirectTo).toBe('tabs/pokemon/:id');
+  it('redirects legacy tabs paths', () => {
+    const legacy = routes.find((route) => route.path === 'tabs');
+    const home = legacy?.children?.find((child) => child.path === 'home');
+    const browse = legacy?.children?.find((child) => child.path === 'browse');
+    expect(home?.redirectTo).toBe('/');
+    expect(browse?.redirectTo).toBe('/browse');
   });
 });

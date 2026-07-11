@@ -18,7 +18,7 @@ describe('StatBarComponent', () => {
   });
 
   it('formats label and ratio', () => {
-    expect(component.label).toBe('Special Attack');
+    expect(component.label).toBe('Sp. Atk');
     expect(component.ratio).toBeCloseTo(128 / 255, 5);
   });
 

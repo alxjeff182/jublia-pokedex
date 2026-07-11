@@ -17,7 +17,8 @@ describe('TypeChipComponent', () => {
   });
 
   it('renders formatted label and type color', () => {
-    expect(component.label).toBe('Electric');
+    const chip = fixture.nativeElement.querySelector('ion-chip');
+    expect(chip?.textContent?.trim()).toBe('Electric');
     expect(component.color).toBe('#F8D030');
   });
 });

@@ -6,7 +6,7 @@
   margin: 0 0 4px;
   font-size: var(--jublia-font-size-base);
   font-weight: var(--jublia-font-weight-bold);
-  color: #1a1a1a;
+  color: var(--jublia-color-text);
 }
 
 .favorites-hint {
@@ -80,7 +80,7 @@
   margin: 0 0 8px;
   font-size: 1.25rem;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--jublia-color-text);
 }
 
 .favorites-empty__message {

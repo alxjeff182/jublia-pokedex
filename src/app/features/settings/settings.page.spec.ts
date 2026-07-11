@@ -69,11 +69,6 @@ describe('SettingsPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('navigates to compare screen', () => {
-    component.openCompare();
-    expect(router.navigate).toHaveBeenCalledWith(['/tabs/compare']);
-  });
-
   it('clears all favorites after confirmation', async () => {
     await component.clearFavorites();
     expect(favorites.clearAll).toHaveBeenCalled();

@@ -1,14 +1,35 @@
 <ion-content id="main-content" role="main" [fullscreen]="true" class="splash-content">
   <div class="splash-wrap">
-    <div class="pokeball" aria-hidden="true">
-      <div class="pokeball-top"></div>
-      <div class="pokeball-center"></div>
-      <div class="pokeball-bottom"></div>
+    <div class="splash-brand" aria-label="{{ 'header.brandTitle' | translate }}">
+      <div class="splash-hero">
+        <div class="splash-hero__aura" aria-hidden="true">
+          <span class="splash-aura splash-aura--outer"></span>
+          <span class="splash-aura splash-aura--inner"></span>
+          <span class="splash-aura splash-aura--ring"></span>
+        </div>
+
+        <div class="splash-hero__decor" aria-hidden="true">
+          <span class="splash-deco splash-deco--diamond"></span>
+          <span class="splash-deco splash-deco--plus"></span>
+          <span class="splash-deco splash-deco--ring"></span>
+          <span class="splash-deco splash-deco--star"></span>
+        </div>
+
+        <img
+          class="splash-hero__ball"
+          src="assets/icon/pokeball.png"
+          alt=""
+          aria-hidden="true"
+          width="160"
+          height="160"
+        />
+      </div>
+      <p class="splash-brand__primary">{{ 'header.brandTitlePrimary' | translate }}</p>
+      <p class="splash-brand__secondary">{{ 'header.brandTitleSecondary' | translate }}</p>
     </div>
-    <h1>JUBLIA Dex</h1>
-    <ion-text color="medium">
-      <p>Premium Pokédex Experience</p>
-    </ion-text>
-    <ion-spinner name="crescent" color="primary"></ion-spinner>
+
+    <div class="splash-loader" aria-hidden="true">
+      <ion-spinner name="lines" color="medium"></ion-spinner>
+    </div>
   </div>
 </ion-content>

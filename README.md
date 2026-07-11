@@ -1,4 +1,4 @@
-# JUBLIA Dex
+# My Pokedex by Jublia AI
 
 [![CI](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/ci.yml/badge.svg)](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/ci.yml)
 [![Deploy](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/deploy.yml/badge.svg)](https://github.com/alxjeff182/jublia-pokedex/actions/workflows/deploy.yml)
@@ -24,7 +24,7 @@ Premium Pokédex mobile/web application built for the Jublia Front End take-home
 
 ## Design
 
-UI follows the provided JUBLIA Dex mockup:
+UI follows the provided My Pokedex by Jublia AI mockup:
 
 - Primary: `#E53935`
 - Background: `#F5F5F7`

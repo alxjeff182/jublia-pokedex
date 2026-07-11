@@ -1,0 +1,104 @@
+<section
+  class="compare-promo"
+  [class.compare-promo--compact]="variant === 'compact'"
+  [class.compare-promo--pulse]="arenaPulse() > 0"
+  [attr.data-pulse]="arenaPulse()"
+  [style.--left-accent]="leftAccent()"
+  [style.--right-accent]="rightAccent()"
+>
+  <div class="compare-promo__glow compare-promo__glow--left" aria-hidden="true"></div>
+  <div class="compare-promo__glow compare-promo__glow--right" aria-hidden="true"></div>
+
+  <header class="compare-promo__header">
+    <div class="compare-promo__titles">
+      <span class="compare-promo__badge">{{ 'compare.mvpBadge' | translate }}</span>
+      <h2>{{ titleKey | translate }}</h2>
+      @if (variant === 'hero') {
+        <p>{{ bodyKey | translate }}</p>
+      }
+    </div>
+    @if (!customMode()) {
+      <button
+        type="button"
+        class="compare-promo__shuffle"
+        [attr.aria-label]="'compare.promoShuffle' | translate"
+        (click)="shuffleMatchup($event)"
+      >
+        <ion-icon name="shuffle-outline" aria-hidden="true"></ion-icon>
+      </button>
+    }
+  </header>
+
+  <div class="compare-promo__arena" role="group" [attr.aria-label]="'compare.promoArenaAria' | translate">
+    <button
+      type="button"
+      class="fighter-card fighter-card--left"
+      [class.fighter-card--empty]="!leftFighter()"
+      [attr.aria-label]="leftFighter() ? displayName(leftFighter()) : ('compare.left' | translate)"
+      (click)="shuffleMatchup($event)"
+    >
+      @if (leftFighter(); as fighter) {
+        <img
+          class="fighter-card__sprite"
+          [src]="spriteUrl(fighter.id)"
+          [alt]="displayName(fighter)"
+          loading="lazy"
+        />
+        <span class="fighter-card__name">{{ displayName(fighter) }}</span>
+      } @else {
+        <span class="fighter-card__placeholder">?</span>
+        <span class="fighter-card__name">{{ 'compare.left' | translate }}</span>
+      }
+    </button>
+
+    <div class="arena-center">
+      <span class="arena-center__vs">{{ 'compare.promoVs' | translate }}</span>
+      <button
+        type="button"
+        class="arena-center__swap"
+        [disabled]="customMode()"
+        [attr.aria-label]="'compare.promoSwap' | translate"
+        (click)="swapSides($event)"
+      >
+        <ion-icon name="swap-horizontal-outline" aria-hidden="true"></ion-icon>
+      </button>
+    </div>
+
+    <button
+      type="button"
+      class="fighter-card fighter-card--right"
+      [class.fighter-card--empty]="!rightFighter()"
+      [attr.aria-label]="rightFighter() ? displayName(rightFighter()) : ('compare.promoPickRival' | translate)"
+      (click)="shuffleMatchup($event)"
+    >
+      @if (rightFighter(); as fighter) {
+        <img
+          class="fighter-card__sprite"
+          [src]="spriteUrl(fighter.id)"
+          [alt]="displayName(fighter)"
+          loading="lazy"
+        />
+        <span class="fighter-card__name">{{ displayName(fighter) }}</span>
+      } @else {
+        <span class="fighter-card__placeholder">?</span>
+        <span class="fighter-card__name">{{ 'compare.promoPickRival' | translate }}</span>
+      }
+    </button>
+  </div>
+
+  <div class="compare-promo__bst" aria-hidden="true">
+    <div class="bst-track">
+      <span class="bst-track__fill bst-track__fill--left" [style.width.%]="leftBstShare()"></span>
+      <span class="bst-track__fill bst-track__fill--right" [style.width.%]="100 - leftBstShare()"></span>
+    </div>
+    <p class="compare-promo__leader">
+      <ion-icon name="flash-outline" aria-hidden="true"></ion-icon>
+      <span>{{ leaderLabel() }}</span>
+    </p>
+  </div>
+
+  <ion-button class="compare-promo__cta" expand="block" color="primary" (click)="openCompare()">
+    <ion-icon slot="start" name="git-compare-outline" aria-hidden="true"></ion-icon>
+    {{ ctaKey | translate }}
+  </ion-button>
+</section>

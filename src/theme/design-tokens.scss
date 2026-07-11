@@ -1,4 +1,4 @@
-// JUBLIA Dex design tokens — CSS custom properties
+// My Pokedex by Jublia AI design tokens — CSS custom properties
 // Keep values in sync with src/app/core/constants/design-tokens.ts
 
 :root {
@@ -15,6 +15,11 @@
   // Shape & elevation
   --jublia-card-radius: 20px;
   --jublia-chip-radius: 999px;
+  --jublia-search-radius: 9999px;
+  --jublia-search-height: 40px;
+  --jublia-search-fill: #ececee;
+  --jublia-header-search-gap: 8px;
+  --jublia-header-search-pad-bottom: 10px;
   --jublia-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.06);
   --jublia-shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
 
@@ -60,6 +65,7 @@
   --jublia-color-text: #f5f5f7;
   --jublia-color-text-muted: #98989d;
   --jublia-color-border: #2c2c2e;
+  --jublia-search-fill: #2c2c2e;
   --jublia-shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.32);
   --jublia-shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.4);
 }

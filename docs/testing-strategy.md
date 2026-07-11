@@ -1,4 +1,4 @@
-# Testing Strategy — JUBLIA Dex
+# Testing Strategy — My Pokedex by Jublia AI
 
 How unit, component, and end-to-end tests are organized, what CI enforces, and how to run everything locally.
 

@@ -53,7 +53,7 @@ describe('PokemonCardComponent', () => {
 
   it('navigates to detail on openDetail', () => {
     component.openDetail(new Event('click'));
-    expect(router.navigate).toHaveBeenCalledWith(['/tabs/pokemon', 25]);
+    expect(router.navigate).toHaveBeenCalledWith(['/pokemon', 'pikachu']);
   });
 
   it('emits favoriteToggled when heart is toggled', async () => {

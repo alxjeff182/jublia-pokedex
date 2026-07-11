@@ -1,6 +1,6 @@
-# Accessibility Checklist — JUBLIA Dex
+# Accessibility Checklist — My Pokedex by Jublia AI
 
-WCAG 2.1 AA-oriented checklist for JUBLIA Dex, plus manual screen-reader verification steps. Use this before merging UI changes and when completing items in [`docs/ui-checklist.md`](ui-checklist.md).
+WCAG 2.1 AA-oriented checklist for My Pokedex by Jublia AI, plus manual screen-reader verification steps. Use this before merging UI changes and when completing items in [`docs/ui-checklist.md`](ui-checklist.md).
 
 Automated scans run in Playwright via `@axe-core/playwright` (see [`docs/testing-strategy.md`](testing-strategy.md)).
 
@@ -68,7 +68,7 @@ Test on **VoiceOver** (macOS/iOS) or **TalkBack** (Android). Run the web build a
 ### 1. Splash → Home
 
 1. Launch the app. Confirm splash announces or lands on home within a few seconds.
-2. Verify the first heading heard is **"JUBLIA Dex"**.
+2. Verify the first heading heard is **"My Pokedex by Jublia AI"**.
 3. Swipe to the search field — confirm placeholder or label is read ("Search Pokémon by name or ID").
 
 ### 2. Search and list

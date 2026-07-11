@@ -1,12 +1,12 @@
-<app-screen-header title="Favorites" [showPokeball]="true" />
+<app-screen-header [title]="'favorites.title' | translate" [showPokeball]="true" />
 
 <ion-content id="main-content" role="main">
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
-      pullingText="Pull to refresh favorites"
+      [pullingText]="'favorites.pullToRefresh' | translate"
       refreshingSpinner="crescent"
-      refreshingText="Refreshing..."
+      [refreshingText]="'home.refreshing' | translate"
     ></ion-refresher-content>
   </ion-refresher>
 
@@ -27,20 +27,30 @@
           <div class="favorites-empty__glow"></div>
           <ion-icon name="heart-outline"></ion-icon>
         </div>
-        <h2 class="favorites-empty__title">No favorites yet</h2>
+        <h2 class="favorites-empty__title">{{ 'favorites.emptyTitle' | translate }}</h2>
         <p class="favorites-empty__message">
-          Tap the heart on any Pokémon card to save it here and build your personal collection.
+          {{ 'favorites.emptyMessage' | translate }}
         </p>
         <ion-button class="favorites-empty__cta" (click)="goHome()">
-          Explore Pokémon
+          {{ 'favorites.explore' | translate }}
         </ion-button>
       </section>
     } @else if (!error()) {
+      <app-compare-promo
+        variant="compact"
+        titleKey="compare.promoFavoritesTitle"
+        bodyKey="compare.promoFavoritesBody"
+        [leftPokemonId]="pokemon()[0]?.id"
+        [rightPokemonId]="pokemon()[1]?.id"
+        [leftPokemonName]="pokemon()[0]?.name"
+        [rightPokemonName]="pokemon()[1]?.name"
+      />
+
       <div class="favorites-summary">
         <p class="favorites-count">
-          {{ favoriteCount() }} favorite{{ favoriteCount() === 1 ? '' : 's' }}
+          {{ favoriteCountLabel() }}
         </p>
-        <p class="favorites-hint">Tap a card to view details · Tap ♥ to remove</p>
+        <p class="favorites-hint">{{ 'favorites.hint' | translate }}</p>
       </div>
 
       <div class="pokemon-grid">

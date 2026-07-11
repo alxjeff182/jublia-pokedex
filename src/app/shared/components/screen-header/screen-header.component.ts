@@ -6,20 +6,28 @@ import {
   IonButtons,
   IonHeader,
   IonIcon,
-  IonTitle,
-  IonToggle,
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { chevronBackOutline, moon, shareOutline, sunny } from 'ionicons/icons';
-import { ThemeService } from '../../../core/services/theme.service';
+import { chevronBackOutline, shareOutline } from 'ionicons/icons';
+import { LanguageService } from '../../../core/services/language.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { ThemePillToggleComponent } from '../theme-pill-toggle/theme-pill-toggle.component';
 
 export type ScreenHeaderVariant = 'default' | 'overlay' | 'brand';
 
 @Component({
   selector: 'app-screen-header',
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonTitle, IonToggle],
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    TranslatePipe,
+    ThemePillToggleComponent,
+  ],
   templateUrl: './screen-header.component.html',
   styleUrl: './screen-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +35,7 @@ export type ScreenHeaderVariant = 'default' | 'overlay' | 'brand';
 export class ScreenHeaderComponent {
   private readonly location = inject(Location);
   private readonly router = inject(Router);
-  protected readonly theme = inject(ThemeService);
+  protected readonly lang = inject(LanguageService);
 
   @Input() title = '';
   @Input() showBrand = false;
@@ -38,15 +46,16 @@ export class ScreenHeaderComponent {
   @Input() rightAriaLabel = '';
   @Input() showPokeball = false;
   @Input() showThemeToggle = true;
+  @Input() showLanguageToggle = true;
 
   @Output() backClick = new EventEmitter<void>();
   @Output() rightClick = new EventEmitter<void>();
   @Output() pokeballClick = new EventEmitter<void>();
 
-  @Input() pokeballHref = '/tabs/home';
+  @Input() pokeballHref = '/';
 
   constructor() {
-    addIcons({ chevronBackOutline, shareOutline, sunny, moon });
+    addIcons({ chevronBackOutline, shareOutline });
   }
 
   get hasBack(): boolean {
@@ -62,16 +71,24 @@ export class ScreenHeaderComponent {
   }
 
   get hasEndAction(): boolean {
+    if (this.isOverlay) {
+      return (
+        !!this.rightIcon ||
+        this.showThemeToggle ||
+        this.showLanguageToggle
+      );
+    }
+
     return (
       !!this.rightIcon ||
       (this.showPokeball && !this.isBrand) ||
-      (this.showThemeToggle && !this.isBrand)
+      (this.showThemeToggle && !this.isBrand) ||
+      (this.showLanguageToggle && !this.isBrand)
     );
   }
 
-  async onThemeToggle(event: CustomEvent): Promise<void> {
-    const checked = (event.detail as { checked: boolean }).checked;
-    await this.theme.setPreference(checked ? 'dark' : 'light');
+  async setLocale(locale: 'en' | 'id'): Promise<void> {
+    await this.lang.setLocale(locale);
   }
 
   onBackClick(): void {

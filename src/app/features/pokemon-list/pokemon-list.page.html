@@ -1,41 +1,47 @@
 <app-screen-header variant="brand">
-  <ion-toolbar header-toolbar class="search-toolbar">
-    <ion-searchbar
-      class="home-searchbar"
-      placeholder="Search Pokémon by name or ID"
-      showClearButton="focus"
-      [debounce]="300"
-      [value]="searchQuery()"
-      (ionInput)="onSearchChange($event)"
-      (ionClear)="onSearchClear()"
-    ></ion-searchbar>
-  </ion-toolbar>
+  <ion-searchbar
+    header-search
+    class="app-searchbar"
+    mode="ios"
+    [placeholder]="'home.searchPlaceholder' | translate"
+    showClearButton="focus"
+    [debounce]="300"
+    [value]="searchQuery()"
+    (ionInput)="onSearchChange($event)"
+    (ionClear)="onSearchClear()"
+  ></ion-searchbar>
 </app-screen-header>
 
 <ion-content id="main-content" role="main">
   <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
-      pullingText="Pull to refresh"
+      [pullingText]="'home.pullToRefresh' | translate"
       refreshingSpinner="crescent"
-      refreshingText="Refreshing..."
+      [refreshingText]="'home.refreshing' | translate"
     ></ion-refresher-content>
   </ion-refresher>
 
   <div class="page-container">
+    <app-compare-promo />
+
     <div class="filters-header">
-      <p class="section-label">Multi-Select Type</p>
+      <p class="section-label">{{ 'home.multiSelectType' | translate }}</p>
       @if (hasActiveFilters()) {
         <button
           type="button"
           class="clear-all-btn"
           [class.clear-all-btn--clearing]="clearingFilters()"
-          [attr.aria-label]="'Clear all ' + activeFilterCount() + ' filters'"
+          [attr.aria-label]="clearAllFiltersAria()"
           (click)="clearAllFilters()"
         >
           <ion-icon name="close-circle-outline" aria-hidden="true"></ion-icon>
-          <span>Clear all</span>
+          <span>{{ 'home.clearAll' | translate }}</span>
           <span class="clear-all-btn__badge">{{ activeFilterCount() }}</span>
+        </button>
+      } @else {
+        <button type="button" class="browse-types-link" (click)="openBrowse()">
+          {{ 'home.browseByType' | translate }}
         </button>
       }
     </div>
@@ -44,7 +50,7 @@
       class="type-filters"
       tabindex="0"
       role="region"
-      aria-label="Pokémon type filters"
+      [attr.aria-label]="'home.typeFiltersAria' | translate"
     >
       @for (type of availableTypes; track type) {
         <ion-chip
@@ -56,7 +62,7 @@
           [attr.aria-pressed]="isTypeSelected(type)"
           (click)="toggleType(type)"
         >
-          {{ typeLabel(type) }}
+          {{ type | typeName }}
         </ion-chip>
       }
     </div>
@@ -65,7 +71,7 @@
       <div class="active-filters">
         @for (type of selectedTypes(); track type) {
           <ion-chip class="active-filter-chip" (click)="removeType(type)">
-            {{ typeLabel(type) }}
+            {{ type | typeName }}
             <ion-icon name="close-circle" aria-hidden="true"></ion-icon>
           </ion-chip>
         }
@@ -114,23 +120,23 @@
 
           <h2 class="home-empty-state__title">
             @if (hasActiveFilters()) {
-              No matches found
+              {{ 'home.noMatchesTitle' | translate }}
             } @else {
-              No Pokémon yet
+              {{ 'home.noPokemonTitle' | translate }}
             }
           </h2>
 
           <p class="home-empty-state__message">
             @if (hasActiveFilters()) {
-              Try a different search term, remove a filter, or explore a suggested type below.
+              {{ 'home.noMatchesMessage' | translate }}
             } @else {
-              Pull down to refresh or browse Pokémon by type.
+              {{ 'home.noPokemonMessage' | translate }}
             }
           </p>
 
           @if (hasActiveFilters()) {
             <div class="home-empty-state__active">
-              <span class="home-empty-state__label">Active filters</span>
+              <span class="home-empty-state__label">{{ 'home.activeFilters' | translate }}</span>
               <div class="home-empty-state__chips">
                 @if (searchQuery().trim()) {
                   <button
@@ -150,7 +156,7 @@
                     [style.--chip-color]="filterChipTextColor(type)"
                     (click)="removeType(type)"
                   >
-                    <span>{{ typeLabel(type) }}</span>
+                    <span>{{ type | typeName }}</span>
                     <ion-icon name="close-circle" aria-hidden="true"></ion-icon>
                   </button>
                 }
@@ -159,7 +165,7 @@
 
             @if (suggestedTypes().length > 0) {
               <div class="home-empty-state__suggestions">
-                <span class="home-empty-state__label">Try these types</span>
+                <span class="home-empty-state__label">{{ 'home.tryTheseTypes' | translate }}</span>
                 <div class="home-empty-state__chips">
                   @for (type of suggestedTypes(); track type; let i = $index) {
                     <button
@@ -169,7 +175,7 @@
                       [style.--enter-delay]="i * 60 + 'ms'"
                       (click)="applySuggestedType(type)"
                     >
-                      {{ typeLabel(type) }}
+                      {{ type | typeName }}
                     </button>
                   }
                 </div>
@@ -179,13 +185,13 @@
             <div class="home-empty-state__actions">
               <ion-button class="home-empty-state__reset" (click)="clearAllFilters()">
                 <ion-icon slot="start" name="refresh-outline" aria-hidden="true"></ion-icon>
-                Reset filters
+                {{ 'home.resetFilters' | translate }}
               </ion-button>
             </div>
           } @else {
             <div class="home-empty-state__actions">
               <ion-button (click)="openBrowse()">
-                Browse by type
+                {{ 'home.browseByType' | translate }}
               </ion-button>
             </div>
           }
@@ -195,7 +201,7 @@
       @if (loadingMore()) {
         <div class="loading-more">
           <ion-spinner name="crescent" color="primary"></ion-spinner>
-          <span>Loading more...</span>
+          <span>{{ 'home.loadingMore' | translate }}</span>
         </div>
       }
     }
@@ -206,7 +212,7 @@
     >
       <ion-infinite-scroll-content
         loadingSpinner="crescent"
-        loadingText="Loading more Pokémon..."
+        [loadingText]="'home.loadingMorePokemon' | translate"
       ></ion-infinite-scroll-content>
     </ion-infinite-scroll>
   </div>

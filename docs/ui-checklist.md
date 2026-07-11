@@ -1,6 +1,6 @@
-# JUBLIA Dex — UI Alignment Checklist
+# My Pokedex by Jublia AI — UI Alignment Checklist
 
-Source of truth: mockup `JUBLIA Dex — Premium Pokédex UI (PokeAPI Ready)`.
+Source of truth: mockup `My Pokedex by Jublia AI — Premium Pokédex UI (PokeAPI Ready)`.
 
 Use this checklist to track how closely the implementation matches the provided design. Check off items as they're implemented and verified against the mockup.
 
@@ -21,7 +21,7 @@ Use this checklist to track how closely the implementation matches the provided 
 ## 1. Splash Screen
 
 - [x] Centered Pokéball icon with soft red glow
-- [x] "JUBLIA Dex" wordmark, bold, centered below icon
+- [x] "My Pokedex by Jublia AI" wordmark, bold, centered below icon
 - [x] Small loading spinner near bottom (not full-screen blocking)
 - [x] White / soft gradient background
 - [x] Auto-navigates to Home after load
@@ -31,7 +31,7 @@ Use this checklist to track how closely the implementation matches the provided 
 ## 2. Home / Pokédex List
 
 ### Header
-- [x] "JUBLIA Dex" title in toolbar
+- [x] "My Pokedex by Jublia AI" title in toolbar
 - [x] Pokéball icon/logo in header (top right or left)
 - [x] Rounded/pill search bar with placeholder "Search"
 

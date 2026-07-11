@@ -26,7 +26,6 @@ describe('BrowsePage', () => {
   it('creates and lists pokemon types', () => {
     expect(component).toBeTruthy();
     expect(component.types.length).toBeGreaterThan(0);
-    expect(component.typeLabel('fire')).toBe('Fire');
     expect(component.typeColor('fire')).toContain('#');
   });
 
@@ -34,7 +33,7 @@ describe('BrowsePage', () => {
     component.openType('water');
     expect(component.pressedType()).toBe('water');
     tick(160);
-    expect(router.navigate).toHaveBeenCalledWith(['/tabs/home'], {
+    expect(router.navigate).toHaveBeenCalledWith(['/'], {
       queryParams: { type: 'water' },
     });
     expect(component.pressedType()).toBeNull();

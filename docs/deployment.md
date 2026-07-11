@@ -1,4 +1,4 @@
-# Deployment — JUBLIA Dex
+# Deployment — My Pokedex by Jublia AI
 
 How to deploy the web app (GitHub Pages) and ship native iOS/Android builds via Capacitor 8.
 

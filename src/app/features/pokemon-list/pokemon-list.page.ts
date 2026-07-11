@@ -16,7 +16,6 @@ import {
   IonRefresherContent,
   IonSearchbar,
   IonSpinner,
-  IonToolbar,
   RefresherCustomEvent,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -29,12 +28,14 @@ import {
 import {
   POKEMON_TYPES,
   PokemonCardData,
-  formatPokemonName,
 } from '../../core/models/pokemon.model';
 import { PokemonService } from '../../core/services/pokemon.service';
 import { HapticsService } from '../../core/services/haptics.service';
-import { PokemonCardComponent } from '../../shared/components/pokemon-card/pokemon-card.component';
+import { LanguageService } from '../../core/services/language.service';
+import { TranslatePipe, TypeNamePipe } from '../../shared/pipes/translate.pipe';
 import { ErrorRetryComponent } from '../../shared/components/error-retry/error-retry.component';
+import { ComparePromoComponent } from '../../shared/components/compare-promo/compare-promo.component';
+import { PokemonCardComponent } from '../../shared/components/pokemon-card/pokemon-card.component';
 import { ScreenHeaderComponent } from '../../shared/components/screen-header/screen-header.component';
 
 const PAGE_SIZE = 20;
@@ -45,7 +46,6 @@ const SUGGESTED_TYPES = ['fire', 'water', 'grass', 'electric', 'psychic', 'drago
   standalone: true,
   imports: [
     ScreenHeaderComponent,
-    IonToolbar,
     IonContent,
     IonSearchbar,
   IonChip,
@@ -57,7 +57,10 @@ const SUGGESTED_TYPES = ['fire', 'water', 'grass', 'electric', 'psychic', 'drago
     IonInfiniteScrollContent,
     IonSpinner,
     PokemonCardComponent,
+    ComparePromoComponent,
     ErrorRetryComponent,
+    TranslatePipe,
+    TypeNamePipe,
   ],
   templateUrl: './pokemon-list.page.html',
   styleUrl: './pokemon-list.page.scss',
@@ -69,6 +72,7 @@ export class PokemonListPage implements OnInit, ViewWillEnter {
   private readonly router = inject(Router);
   private readonly haptics = inject(HapticsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly lang = inject(LanguageService);
   private readonly searchReload$ = new Subject<void>();
 
   readonly pageSize = PAGE_SIZE;
@@ -94,15 +98,22 @@ export class PokemonListPage implements OnInit, ViewWillEnter {
   );
 
   readonly resultsLabel = computed(() => {
+    this.lang.locale();
     const count = this.pokemon().length;
     if (count === 0) {
       return '';
     }
 
     const suffix = this.hasMore() ? '+' : '';
+    const countLabel = `${count}${suffix}`;
     return this.hasActiveFilters()
-      ? `${count}${suffix} Pokémon found`
-      : `${count}${suffix} Pokémon`;
+      ? this.lang.t('home.resultsFound', { count: countLabel })
+      : this.lang.t('home.resultsTotal', { count: countLabel });
+  });
+
+  readonly clearAllFiltersAria = computed(() => {
+    this.lang.locale();
+    return this.lang.t('home.clearAllFiltersAria', { count: this.activeFilterCount() });
   });
 
   readonly suggestedTypes = computed(() => {
@@ -168,7 +179,7 @@ export class PokemonListPage implements OnInit, ViewWillEnter {
   }
 
   typeLabel(type: string): string {
-    return formatPokemonName(type);
+    return this.lang.translateType(type);
   }
 
   filterChipBackground(type: string): string {
@@ -217,7 +228,7 @@ export class PokemonListPage implements OnInit, ViewWillEnter {
   }
 
   openBrowse(): void {
-    void this.router.navigate(['/tabs/browse']);
+    void this.router.navigate(['/browse']);
   }
 
   onRefresh(event: RefresherCustomEvent): void {

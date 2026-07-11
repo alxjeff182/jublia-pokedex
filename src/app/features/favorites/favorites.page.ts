@@ -15,9 +15,12 @@ import { PokemonCardData } from '../../core/models/pokemon.model';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { HapticsService } from '../../core/services/haptics.service';
 import { PokemonService } from '../../core/services/pokemon.service';
+import { LanguageService } from '../../core/services/language.service';
 import { ErrorRetryComponent } from '../../shared/components/error-retry/error-retry.component';
+import { ComparePromoComponent } from '../../shared/components/compare-promo/compare-promo.component';
 import { PokemonCardComponent } from '../../shared/components/pokemon-card/pokemon-card.component';
 import { ScreenHeaderComponent } from '../../shared/components/screen-header/screen-header.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-favorites',
@@ -30,7 +33,9 @@ import { ScreenHeaderComponent } from '../../shared/components/screen-header/scr
     IonButton,
     IonIcon,
     PokemonCardComponent,
+    ComparePromoComponent,
     ErrorRetryComponent,
+    TranslatePipe,
   ],
   templateUrl: './favorites.page.html',
   styleUrl: './favorites.page.scss',
@@ -41,6 +46,7 @@ export class FavoritesPage implements ViewWillEnter {
   private readonly pokemonService = inject(PokemonService);
   private readonly router = inject(Router);
   private readonly haptics = inject(HapticsService);
+  private readonly lang = inject(LanguageService);
 
   readonly pokemon = signal<PokemonCardData[]>([]);
   readonly loading = signal(true);
@@ -48,6 +54,14 @@ export class FavoritesPage implements ViewWillEnter {
   readonly removingIds = signal<Set<number>>(new Set());
 
   readonly favoriteCount = computed(() => this.pokemon().length);
+
+  readonly favoriteCountLabel = computed(() => {
+    this.lang.locale();
+    const count = this.favoriteCount();
+    return count === 1
+      ? this.lang.t('favorites.countOne', { count })
+      : this.lang.t('favorites.countMany', { count });
+  });
 
   constructor() {
     addIcons({ heartOutline });
@@ -89,7 +103,7 @@ export class FavoritesPage implements ViewWillEnter {
   }
 
   goHome(): void {
-    void this.router.navigate(['/tabs/home']);
+    void this.router.navigate(['/']);
   }
 
   private loadFavorites(onComplete?: () => void): void {

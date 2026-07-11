@@ -6,8 +6,8 @@
 
 .skeleton-card {
   border-radius: 20px;
-  border: 1px solid #ececf1;
-  background: #ffffff;
+  border: 1px solid var(--jublia-color-border);
+  background: var(--jublia-color-surface);
   padding: 16px;
   overflow: hidden;
 }
@@ -15,7 +15,12 @@
 .skeleton-sprite,
 .skeleton-line,
 .skeleton-chips span {
-  background: linear-gradient(90deg, #ececf1 0%, #f5f5f7 50%, #ececf1 100%);
+  background: linear-gradient(
+    90deg,
+    var(--jublia-color-border) 0%,
+    color-mix(in srgb, var(--jublia-color-border) 50%, var(--jublia-color-background)) 50%,
+    var(--jublia-color-border) 100%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.2s ease-in-out infinite;
   border-radius: 9999px;

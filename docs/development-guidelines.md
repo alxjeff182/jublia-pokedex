@@ -1,4 +1,4 @@
-# Development Guidelines — JUBLIA Dex
+# Development Guidelines — My Pokedex by Jublia AI
 
 Official documentation is the source of truth for components, APIs, and styling. Read the relevant docs **before** changing UI, styles, or platform behavior.
 

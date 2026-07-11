@@ -1,8 +1,9 @@
 <app-screen-header
   variant="overlay"
+  [title]="headerTitle"
   [showBack]="true"
   rightIcon="share-outline"
-  rightAriaLabel="Share Pokémon"
+  [rightAriaLabel]="'header.sharePokemon' | translate"
   (backClick)="goBack()"
   (rightClick)="sharePokemon()"
 />
@@ -11,7 +12,7 @@
   @if (loading()) {
     <div class="loading-wrap" aria-live="polite">
       <ion-spinner name="crescent" color="primary"></ion-spinner>
-      <span class="sr-only">Loading Pokémon details</span>
+      <span class="sr-only">{{ 'detail.loadingSr' | translate }}</span>
     </div>
   } @else if (pokemon(); as detail) {
     <div class="detail-page">
@@ -35,24 +36,36 @@
         </div>
 
         <div class="action-row">
-          <button
-            type="button"
-            class="favorite-pill"
-            [class.is-active]="isFavorite()"
-            [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
-            (click)="toggleFavorite()"
-          >
-            <ion-icon name="heart" class="favorite-heart" aria-hidden="true"></ion-icon>
-            <span>Favorite</span>
-          </button>
+          <div class="action-pills">
+            <button
+              type="button"
+              class="favorite-pill"
+              [class.is-active]="isFavorite()"
+              [attr.aria-label]="favoriteAriaLabel()"
+              (click)="toggleFavorite()"
+            >
+              <ion-icon name="heart" class="favorite-heart" aria-hidden="true"></ion-icon>
+              <span>{{ 'detail.favorite' | translate }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="compare-pill"
+              [attr.aria-label]="'detail.compare' | translate"
+              (click)="openCompare()"
+            >
+              <ion-icon name="git-compare-outline" class="compare-icon" aria-hidden="true"></ion-icon>
+              <span>{{ 'detail.compare' | translate }}</span>
+            </button>
+          </div>
 
           <div class="physical-stats">
             <div class="physical-stat">
-              <span>Height</span>
+              <span>{{ 'detail.height' | translate }}</span>
               <strong>{{ detail.height / 10 }} m</strong>
             </div>
             <div class="physical-stat">
-              <span>Weight</span>
+              <span>{{ 'detail.weight' | translate }}</span>
               <strong>{{ detail.weight / 10 }} kg</strong>
             </div>
           </div>
@@ -67,7 +80,7 @@
             [attr.aria-expanded]="abilitiesOpen()"
             (click)="toggleAbilities()"
           >
-            <span class="menu-label">Abilities</span>
+            <span class="menu-label">{{ 'detail.abilities' | translate }}</span>
             <ion-icon name="chevron-forward" class="menu-chevron" aria-hidden="true"></ion-icon>
           </button>
           @if (abilitiesOpen()) {
@@ -78,7 +91,7 @@
                     {{ formatAbilityName(ability.ability.name) }}
                   </span>
                   @if (ability.is_hidden) {
-                    <span class="menu-panel-note">Hidden</span>
+                    <span class="menu-panel-note">{{ 'common.hidden' | translate }}</span>
                   }
                 </div>
               }
@@ -87,7 +100,7 @@
         </div>
 
         <div class="detail-section">
-          <h2 class="section-title">Base Stats</h2>
+          <h2 class="section-title">{{ 'detail.baseStats' | translate }}</h2>
           <div class="stats-split">
             <div class="stats-bars">
               @for (stat of detail.stats; track stat.stat.name) {
@@ -116,14 +129,14 @@
 
         @if (evolution().length > 0) {
           <div class="detail-section">
-            <h2 class="section-title">Evolution Chain</h2>
+            <h2 class="section-title">{{ 'detail.evolutionChain' | translate }}</h2>
             <div class="evolution-row">
               @for (node of evolution(); track node.id; let last = $last) {
                 <button
                   class="evolution-circle"
                   type="button"
                   [style.--evo-color]="evolutionColor(node)"
-                  (click)="openPokemon(node.id)"
+                  (click)="openPokemon(node.name)"
                 >
                   <span class="evolution-glow"></span>
                   <img
@@ -141,8 +154,8 @@
 
         <div class="detail-section detail-section--last">
           <button type="button" class="menu-row" (click)="openMovesModal()">
-            <span class="menu-label">Moves</span>
-            <span class="menu-meta">{{ moveEntries().length }} moves</span>
+            <span class="menu-label">{{ 'detail.moves' | translate }}</span>
+            <span class="menu-meta">{{ movesCountLabel() }}</span>
             <ion-icon name="chevron-forward" class="menu-chevron" aria-hidden="true"></ion-icon>
           </button>
         </div>
@@ -159,9 +172,9 @@
       <ng-template>
         <ion-header>
           <ion-toolbar>
-            <ion-title>{{ displayName }} Moves</ion-title>
+            <ion-title>{{ movesModalTitle() }}</ion-title>
             <ion-buttons slot="end">
-              <ion-button fill="clear" aria-label="Close moves" (click)="closeMovesModal()">
+              <ion-button fill="clear" [attr.aria-label]="'detail.closeMoves' | translate" (click)="closeMovesModal()">
                 <ion-icon slot="icon-only" name="close-outline" aria-hidden="true"></ion-icon>
               </ion-button>
             </ion-buttons>
@@ -169,7 +182,7 @@
           <ion-toolbar>
             <ion-searchbar
               class="moves-search"
-              placeholder="Search moves..."
+              [placeholder]="'detail.searchMoves' | translate"
               [debounce]="200"
               [value]="moveSearch()"
               (ionInput)="onMoveSearch($event)"
@@ -179,7 +192,7 @@
 
         <ion-content class="moves-modal-content">
           <div class="move-filters">
-            @for (filter of moveFilterOptions; track filter.id) {
+            @for (filter of moveFilterOptions(); track filter.id) {
               <ion-chip
                 [class.active]="moveFilter() === filter.id"
                 (click)="setMoveFilter(filter.id)"
@@ -190,13 +203,13 @@
           </div>
 
           <p class="moves-result-count">
-            {{ filteredMoves().length }} of {{ moveEntries().length }} moves
+            {{ movesResultLabel() }}
           </p>
 
           @if (filteredMoves().length === 0) {
             <div class="moves-empty">
               <ion-icon name="search-outline" color="medium" aria-hidden="true"></ion-icon>
-              <p>No moves match your search.</p>
+              <p>{{ 'detail.noMovesMatch' | translate }}</p>
             </div>
           } @else {
             <ion-list class="moves-list" lines="full">
@@ -224,9 +237,9 @@
                   <div class="move-detail-panel">
                     @for (method of move.learnMethods; track method) {
                       <span class="move-method-tag">
-                        {{ formatLearnMethod(method) }}
+                        {{ method | learnMethod }}
                         @if (method === 'level-up' && move.minLevel !== null) {
-                          · Lv. {{ move.minLevel }}
+                          · {{ 'detail.levelShort' | translate }} {{ move.minLevel }}
                         }
                       </span>
                     }

@@ -1,4 +1,4 @@
-# Architecture — JUBLIA Dex
+# Architecture — My Pokedex by Jublia AI
 
 High-level overview of how the Angular 20 + Ionic 8 + Capacitor 8 app is structured, how data flows through it, and how native platforms are integrated.
 

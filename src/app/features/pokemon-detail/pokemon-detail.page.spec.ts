@@ -8,6 +8,7 @@ import { PokemonDetailPage } from './pokemon-detail.page';
 import { PokemonService } from '../../core/services/pokemon.service';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { HapticsService } from '../../core/services/haptics.service';
+import { SeoService } from '../../core/services/seo.service';
 import { PokemonDetail } from '../../core/models/pokemon.model';
 
 describe('PokemonDetailPage', () => {
@@ -16,6 +17,7 @@ describe('PokemonDetailPage', () => {
   let pokemonService: jasmine.SpyObj<PokemonService>;
   let favorites: jasmine.SpyObj<FavoritesService>;
   let haptics: jasmine.SpyObj<HapticsService>;
+  let seo: jasmine.SpyObj<SeoService>;
   let router: jasmine.SpyObj<Router>;
   let paramMap$: { subscribe: (fn: (v: { get: (k: string) => string | null }) => void) => void };
 
@@ -34,7 +36,7 @@ describe('PokemonDetailPage', () => {
   beforeEach(async () => {
     paramMap$ = {
       subscribe: (fn) => {
-        fn(convertToParamMap({ id: '25' }));
+        fn(convertToParamMap({ slug: 'pikachu' }));
         return { unsubscribe: () => undefined };
       },
     };
@@ -55,6 +57,16 @@ describe('PokemonDetailPage', () => {
     haptics = jasmine.createSpyObj('HapticsService', ['lightImpact']);
     haptics.lightImpact.and.resolveTo();
 
+    seo = jasmine.createSpyObj('SeoService', [
+      'updateTags',
+      'updateCanonical',
+      'setJsonLd',
+      'buildUrl',
+    ]);
+    seo.buildUrl.and.callFake(
+      (path: string) => `https://alxjeff182.github.io/jublia-pokedex${path}`,
+    );
+
     router = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
 
     await TestBed.configureTestingModule({
@@ -63,6 +75,7 @@ describe('PokemonDetailPage', () => {
         { provide: PokemonService, useValue: pokemonService },
         { provide: FavoritesService, useValue: favorites },
         { provide: HapticsService, useValue: haptics },
+        { provide: SeoService, useValue: seo },
         { provide: Router, useValue: router },
         {
           provide: ToastController,
@@ -76,7 +89,7 @@ describe('PokemonDetailPage', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: paramMap$,
-            snapshot: { paramMap: convertToParamMap({ id: '25' }) },
+            snapshot: { paramMap: convertToParamMap({ slug: 'pikachu' }) },
           },
         },
         { provide: Location, useValue: { back: jasmine.createSpy('back') } },
@@ -94,6 +107,24 @@ describe('PokemonDetailPage', () => {
     expect(component.pokemon()?.name).toBe('pikachu');
     expect(component.displayName).toBe('Pikachu');
     expect(component.displayId).toBe('#025');
+  });
+
+  it('updates SEO tags and JSON-LD after pokemon loads', () => {
+    expect(seo.updateTags).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        title: 'My Pokedex by Jublia AI — Pikachu',
+        url: 'https://alxjeff182.github.io/jublia-pokedex/pokemon/pikachu',
+        type: 'article',
+      }),
+    );
+    expect(seo.updateCanonical).toHaveBeenCalledWith(
+      'https://alxjeff182.github.io/jublia-pokedex/pokemon/pikachu',
+    );
+    expect(seo.setJsonLd).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        '@context': 'https://schema.org',
+      }),
+    );
   });
 
   it('toggles abilities panel', () => {
@@ -146,7 +177,7 @@ describe('PokemonDetailPage', () => {
   it('retries loading on error', () => {
     pokemonService.getPokemonDetail.calls.reset();
     component.retry();
-    expect(pokemonService.getPokemonDetail).toHaveBeenCalledWith(25);
+    expect(pokemonService.getPokemonDetail).toHaveBeenCalledWith('pikachu');
   });
 
   it('sets error when load fails', () => {
@@ -173,7 +204,7 @@ describe('PokemonDetailPage', () => {
 
     Object.defineProperty(window.history, 'length', { configurable: true, value: 1 });
     component.goBack();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/tabs/home');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
   it('manages moves modal state', () => {
@@ -248,8 +279,8 @@ describe('PokemonDetailPage', () => {
   });
 
   it('opens another pokemon from evolution chain', () => {
-    component.openPokemon(1);
-    expect(router.navigate).toHaveBeenCalledWith(['/tabs/pokemon', 1]);
+    component.openPokemon('bulbasaur');
+    expect(router.navigate).toHaveBeenCalledWith(['/pokemon', 'bulbasaur']);
   });
 
   it('formats ability and evolution colors', () => {

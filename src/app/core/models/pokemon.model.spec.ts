@@ -3,10 +3,14 @@ import {
   formatPokemonId,
   formatPokemonName,
   getPokemonSprite,
+  isPokemonSlugNumeric,
+  isValidPokemonSlug,
   normalizePokemonMoves,
+  pokemonDetailRoute,
   PokemonDetail,
   PokemonMove,
   toCardData,
+  toPokemonSlug,
 } from './pokemon.model';
 
 describe('pokemon.model helpers', () => {
@@ -113,6 +117,29 @@ describe('pokemon.model helpers', () => {
         sprite: 'front.png',
         types: ['electric', 'flying'],
       });
+    });
+  });
+
+  describe('slug helpers', () => {
+    it('normalizes pokemon names to slugs', () => {
+      expect(toPokemonSlug('Pikachu')).toBe('pikachu');
+      expect(toPokemonSlug('  mr-mime ')).toBe('mr-mime');
+    });
+
+    it('detects numeric legacy slugs', () => {
+      expect(isPokemonSlugNumeric('299')).toBeTrue();
+      expect(isPokemonSlugNumeric('pikachu')).toBeFalse();
+    });
+
+    it('validates slug format', () => {
+      expect(isValidPokemonSlug('victreebel')).toBeTrue();
+      expect(isValidPokemonSlug('mr-mime')).toBeTrue();
+      expect(isValidPokemonSlug('299')).toBeTrue();
+      expect(isValidPokemonSlug('not valid!')).toBeFalse();
+    });
+
+    it('builds detail routes from names', () => {
+      expect(pokemonDetailRoute('Victreebel')).toEqual(['/pokemon', 'victreebel']);
     });
   });
 });

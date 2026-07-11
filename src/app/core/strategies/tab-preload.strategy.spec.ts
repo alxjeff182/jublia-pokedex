@@ -12,9 +12,11 @@ describe('TabPreloadStrategy', () => {
 
   it('preloads configured tab routes', () => {
     const load = jasmine.createSpy('load').and.returnValue(of('loaded'));
-    const result = strategy.preload({ path: 'home' }, load);
+    strategy.preload({ path: '' }, load);
     expect(load).toHaveBeenCalled();
-    result.subscribe((value) => expect(value).toBe('loaded'));
+    strategy.preload({ path: 'home' }, load);
+    strategy.preload({ path: 'compare' }, load);
+    expect(load).toHaveBeenCalledTimes(3);
   });
 
   it('skips preload for other routes', () => {

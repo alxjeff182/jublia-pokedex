@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ScreenHeaderComponent } from './screen-header.component';
+import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 describe('ScreenHeaderComponent', () => {
@@ -11,14 +12,19 @@ describe('ScreenHeaderComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let location: jasmine.SpyObj<Location>;
 
+  let language: jasmine.SpyObj<LanguageService>;
   let theme: jasmine.SpyObj<ThemeService>;
 
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigateByUrl']);
     location = jasmine.createSpyObj('Location', ['back']);
-    theme = jasmine.createSpyObj('ThemeService', ['setPreference']);
+    theme = jasmine.createSpyObj('ThemeService', ['toggleDarkMode']);
     Object.defineProperty(theme, 'isDark', { value: signal(false) });
-    theme.setPreference.and.resolveTo();
+    theme.toggleDarkMode.and.resolveTo();
+    language = jasmine.createSpyObj('LanguageService', ['setLocale', 't']);
+    Object.defineProperty(language, 'locale', { value: signal('en') });
+    language.setLocale.and.resolveTo();
+    language.t.and.callFake((key: string) => key);
 
     await TestBed.configureTestingModule({
       imports: [ScreenHeaderComponent],
@@ -26,6 +32,7 @@ describe('ScreenHeaderComponent', () => {
         { provide: Router, useValue: router },
         { provide: Location, useValue: location },
         { provide: ThemeService, useValue: theme },
+        { provide: LanguageService, useValue: language },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
@@ -36,7 +43,7 @@ describe('ScreenHeaderComponent', () => {
   });
 
   it('detects back button when backHref is set', () => {
-    component.backHref = '/tabs/home';
+    component.backHref = '/';
     expect(component.hasBack).toBeTrue();
   });
 
@@ -55,14 +62,53 @@ describe('ScreenHeaderComponent', () => {
 
   it('navigates to pokeballHref by default', () => {
     component.onPokeballClick();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/tabs/home');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
   it('uses browser history when backHref is set', () => {
-    component.backHref = '/tabs/home';
+    component.backHref = '/';
     Object.defineProperty(window.history, 'length', { configurable: true, value: 2 });
     component.onBackClick();
     expect(location.back).toHaveBeenCalled();
+  });
+
+  it('renders default toolbar title left-aligned when provided', () => {
+    component.title = 'Compare Pokémon';
+    fixture.detectChanges();
+
+    const title = fixture.nativeElement.querySelector('.toolbar-title');
+    expect(title?.textContent?.trim()).toBe('Compare Pokémon');
+  });
+
+  it('renders overlay title when provided', () => {
+    component.variant = 'overlay';
+    component.title = 'Pikachu';
+    component.showBack = true;
+    fixture.detectChanges();
+
+    const title = fixture.nativeElement.querySelector('.overlay-nav__title');
+    expect(title?.textContent?.trim()).toBe('Pikachu');
+  });
+
+  it('renders overlay theme and language switches', () => {
+    component.variant = 'overlay';
+    component.title = 'Ivysaur';
+    component.showBack = true;
+    component.rightIcon = 'share-outline';
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.lang-switch--overlay')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-theme-pill-toggle')).toBeTruthy();
+  });
+
+  it('renders default header switches together', () => {
+    component.title = 'Favorites';
+    fixture.detectChanges();
+
+    const switches = fixture.nativeElement.querySelector('.header-end-switches');
+    expect(switches).toBeTruthy();
+    expect(switches.querySelector('.lang-switch')).toBeTruthy();
+    expect(switches.querySelector('app-theme-pill-toggle')).toBeTruthy();
   });
 
   it('detects overlay variant and end actions', () => {
@@ -81,14 +127,14 @@ describe('ScreenHeaderComponent', () => {
   });
 
   it('navigates to backHref when history is empty', () => {
-    component.backHref = '/tabs/home';
+    component.backHref = '/';
     Object.defineProperty(window.history, 'length', { configurable: true, value: 1 });
     component.onBackClick();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/tabs/home');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
-  it('updates theme from header toggle', async () => {
-    await component.onThemeToggle({ detail: { checked: true } } as CustomEvent);
-    expect(theme.setPreference).toHaveBeenCalledWith('dark');
+  it('updates locale from header switch', async () => {
+    await component.setLocale('id');
+    expect(language.setLocale).toHaveBeenCalledWith('id');
   });
 });

@@ -6,7 +6,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 8100",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "ng build",
+    "postbuild": "node scripts/copy-404.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --configuration=ci --no-watch --browsers=ChromeHeadless",
@@ -47,6 +50,7 @@
     "@capacitor/status-bar": "8.0.2",
     "@ionic/angular": "^8.0.0",
     "ionicons": "^7.0.0",
+    "lottie-web": "^5.13.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -82,5 +86,5 @@
     "source-map-explorer": "^2.5.3",
     "typescript": "~5.9.0"
   },
-  "description": "JUBLIA Dex - Premium Pokédex built with Angular, Ionic, and Capacitor"
+  "description": "My Pokedex by Jublia AI - Premium Pokédex built with Angular, Ionic, and Capacitor"
 }

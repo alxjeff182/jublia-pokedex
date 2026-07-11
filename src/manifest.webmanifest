@@ -1,6 +1,6 @@
 {
-  "name": "JUBLIA Dex",
-  "short_name": "JUBLIA Dex",
+  "name": "My Pokedex by Jublia AI",
+  "short_name": "My Pokedex",
   "description": "Premium Pokédex built with Angular, Ionic, and Capacitor",
   "theme_color": "#e53935",
   "background_color": "#f5f5f7",
@@ -9,13 +9,13 @@
   "start_url": "./",
   "icons": [
     {
-      "src": "assets/icon/favicon.png",
+      "src": "assets/icon/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/icon/pokeball.png",
+      "src": "assets/icon/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

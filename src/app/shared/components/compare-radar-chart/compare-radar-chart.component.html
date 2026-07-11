@@ -1,0 +1,38 @@
+<div
+  class="compare-radar"
+  [style.--left-color]="leftColor"
+  [style.--right-color]="rightColor"
+>
+  <svg [attr.viewBox]="'0 0 ' + chartSize + ' ' + chartSize" role="img" aria-hidden="true">
+    @for (level of gridLevels(); track level) {
+      <polygon class="compare-radar__grid" [attr.points]="gridPolygonPoints(level)"></polygon>
+    }
+
+    @for (stat of orderedLeft; track stat.name; let index = $index) {
+      <line
+        class="compare-radar__axis"
+        [attr.x1]="center"
+        [attr.y1]="center"
+        [attr.x2]="axisCoords(index).x"
+        [attr.y2]="axisCoords(index).y"
+      ></line>
+    }
+
+    <polygon class="compare-radar__fill compare-radar__fill--right" [attr.points]="rightPolygon()"></polygon>
+    <polygon class="compare-radar__stroke compare-radar__stroke--right" [attr.points]="rightPolygon()"></polygon>
+    <polygon class="compare-radar__fill compare-radar__fill--left" [attr.points]="leftPolygon()"></polygon>
+    <polygon class="compare-radar__stroke compare-radar__stroke--left" [attr.points]="leftPolygon()"></polygon>
+
+    @for (stat of orderedLeft; track stat.name; let index = $index) {
+      <text
+        class="compare-radar__label"
+        [attr.x]="labelPosition(index).x"
+        [attr.y]="labelPosition(index).y"
+        text-anchor="middle"
+        dominant-baseline="middle"
+      >
+        {{ shortLabel(stat.name) }}
+      </text>
+    }
+  </svg>
+</div>

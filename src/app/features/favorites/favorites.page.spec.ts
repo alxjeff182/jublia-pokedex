@@ -100,7 +100,7 @@ describe('FavoritesPage', () => {
 
   it('navigates home from empty state action', () => {
     component.goHome();
-    expect(router.navigate).toHaveBeenCalledWith(['/tabs/home']);
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('dismisses error and refreshes on pull', async () => {

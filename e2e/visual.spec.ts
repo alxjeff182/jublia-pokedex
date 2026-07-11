@@ -13,8 +13,9 @@ async function preparePage(page: Page, theme: 'light' | 'dark' = 'light'): Promi
 
 async function waitForHome(page: Page): Promise<void> {
   await page.goto('/');
-  await page.waitForURL('**/tabs/home', { timeout: 15_000 });
-  await expect(page.locator('app-pokemon-list ion-searchbar.home-searchbar')).toBeVisible();
+  await expect(page.locator('app-pokemon-list ion-searchbar.app-searchbar')).toBeVisible({
+    timeout: 15_000,
+  });
   await expect(page.getByText('Bulbasaur', { exact: true })).toBeVisible();
   await page.waitForLoadState('networkidle');
 }
@@ -50,7 +51,7 @@ test.describe('Visual regression', () => {
       .filter({ hasText: 'Squirtle' })
       .locator('.card-nav')
       .click();
-    await page.waitForURL('**/tabs/pokemon/7');
+    await page.waitForURL('**/pokemon/squirtle');
     await expect(page.locator('app-pokemon-detail').getByRole('heading', { name: 'Squirtle' })).toBeVisible();
     await page.waitForLoadState('networkidle');
     await expect(page.locator('app-pokemon-detail')).toHaveScreenshot('detail-light.png');
@@ -65,7 +66,7 @@ test.describe('Visual regression', () => {
       .filter({ hasText: 'Squirtle' })
       .locator('.card-nav')
       .click();
-    await page.waitForURL('**/tabs/pokemon/7');
+    await page.waitForURL('**/pokemon/squirtle');
     await expect(page.locator('app-pokemon-detail').getByRole('heading', { name: 'Squirtle' })).toBeVisible();
     await page.waitForLoadState('networkidle');
     await expect(page.locator('app-pokemon-detail')).toHaveScreenshot('detail-dark.png');
@@ -74,16 +75,14 @@ test.describe('Visual regression', () => {
   test('compare screen', async ({ page }) => {
     await preparePage(page, 'light');
     await waitForHome(page);
-    await page.locator('ion-tab-button[tab="settings"]').click();
-    await page.waitForURL('**/tabs/settings');
-    await page.getByRole('listitem').filter({ hasText: 'Compare Pokémon' }).click();
-    await page.waitForURL('**/tabs/compare');
+    await page.locator('ion-tab-button[tab="compare"]').click();
+    await page.waitForURL('**/compare');
 
     const compareSearch = page.locator('app-compare ion-searchbar input');
     await compareSearch.fill('char');
-    await page.locator('app-compare ion-item').filter({ hasText: 'Charmander' }).getByRole('button', { name: 'Left' }).click();
+    await page.locator('app-compare .search-result').filter({ hasText: 'Charmander' }).getByRole('button', { name: 'Left' }).click();
     await compareSearch.fill('pika');
-    await page.locator('app-compare ion-item').filter({ hasText: 'Pikachu' }).getByRole('button', { name: 'Right' }).click();
+    await page.locator('app-compare .search-result').filter({ hasText: 'Pikachu' }).getByRole('button', { name: 'Right' }).click();
     await expect(page.locator('app-compare').getByRole('heading', { name: 'Stat Comparison' })).toBeVisible();
     await page.waitForLoadState('networkidle');
     await expect(page.locator('app-compare')).toHaveScreenshot('compare-light.png');

@@ -3,7 +3,7 @@
     class="stat-row compact"
     [class.highlight]="highlight"
     [class.muted-value]="mutedValue"
-    [attr.aria-label]="label + ': ' + value + ' out of ' + max"
+    [attr.aria-label]="ariaLabel"
     role="group"
   >
     <span class="sr-only">{{ label }}</span>
@@ -19,9 +19,9 @@
     class="stat-row"
     [class.highlight]="highlight"
     role="group"
-    [attr.aria-label]="label + ': ' + value + ' out of ' + max"
+    [attr.aria-label]="ariaLabel"
   >
-    <span class="stat-name">{{ label }}</span>
+    <span class="stat-name">{{ name | statName }}</span>
     <span class="stat-value">{{ value }}</span>
     <ion-progress-bar
       aria-hidden="true"

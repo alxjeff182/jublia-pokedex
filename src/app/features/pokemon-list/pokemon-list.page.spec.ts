@@ -80,7 +80,7 @@ describe('PokemonListPage', () => {
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     component.openBrowse();
-    expect(router.navigate).toHaveBeenCalledWith(['/tabs/browse']);
+    expect(router.navigate).toHaveBeenCalledWith(['/browse']);
   });
 
   it('applies type from route query params', () => {

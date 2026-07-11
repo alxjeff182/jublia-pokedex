@@ -8,6 +8,7 @@ import {
   PokemonCardData,
   formatPokemonId,
   formatPokemonName,
+  pokemonDetailRoute,
 } from '../../../core/models/pokemon.model';
 import { FavoritesService } from '../../../core/services/favorites.service';
 import { HapticsService } from '../../../core/services/haptics.service';
@@ -57,7 +58,7 @@ export class PokemonCardComponent {
   }
 
   openDetail(event: Event): void {
-    void this.router.navigate(['/tabs/pokemon', this.pokemon.id]);
+    void this.router.navigate(pokemonDetailRoute(this.pokemon.name));
   }
 
   async toggleFavorite(event: Event): Promise<void> {

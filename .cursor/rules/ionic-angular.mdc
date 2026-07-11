@@ -1,10 +1,10 @@
 ---
-description: JUBLIA Dex Angular + Ionic conventions
+description: My Pokedex by Jublia AI Angular + Ionic conventions
 globs: src/**/*.ts,src/**/*.html,src/**/*.scss
 alwaysApply: true
 ---
 
-# JUBLIA Dex Stack Rules
+# My Pokedex by Jublia AI Stack Rules
 
 - Use **standalone components** only. Do not add new NgModules.
 - Prefer **Ionic components** (`ion-*`) over custom HTML for UI primitives.

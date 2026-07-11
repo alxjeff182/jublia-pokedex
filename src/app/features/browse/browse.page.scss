@@ -1,7 +1,7 @@
 .section-label {
   font-size: var(--jublia-font-size-base);
   font-weight: var(--jublia-font-weight-bold);
-  color: #1a1a1a;
+  color: var(--jublia-color-text);
   margin: 0 0 4px;
 }
 
@@ -31,10 +31,10 @@
   cursor: pointer;
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--tile-color) 22%, #ffffff) 0%,
-    #ffffff 100%
+    color-mix(in srgb, var(--tile-color) 22%, var(--jublia-color-surface)) 0%,
+    var(--jublia-color-surface) 100%
   );
-  border: 1px solid color-mix(in srgb, var(--tile-color) 35%, #ececf1);
+  border: 1px solid color-mix(in srgb, var(--tile-color) 35%, var(--jublia-color-border));
   box-shadow: var(--jublia-shadow-soft);
   animation: card-enter 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   animation-delay: var(--enter-delay, 0ms);
