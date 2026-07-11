@@ -1,0 +1,10 @@
+{
+  "name": "My Pokedex Design Builder",
+  "id": "jublia-pokedex-design-builder",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["https://raw.githubusercontent.com"]
+  }
+}

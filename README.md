@@ -24,12 +24,15 @@ Premium Pokédex mobile/web application built for the Jublia Front End take-home
 
 ## Design
 
-UI follows the provided My Pokedex by Jublia AI mockup:
+UI follows the My Pokedex by Jublia AI design system:
 
+- **Figma file:** [My Pokedex by Jublia AI](https://www.figma.com/design/QqH1OAWzDrtleQ77xrxlxR/My-Pokedex-by-Jublia-AI) — Design System, Components, and screen frames (light/dark)
 - Primary: `#E53935`
 - Background: `#F5F5F7`
 - Accent: `#00B8D9`
 - Rounded cards, type chips, and bottom tab navigation
+
+Design tokens live in [`src/theme/design-tokens.scss`](src/theme/design-tokens.scss). To regenerate or extend the Figma file locally, see [`scripts/figma-design/README.md`](scripts/figma-design/README.md).
 
 ## Documentation
 
