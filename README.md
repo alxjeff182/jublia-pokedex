@@ -34,6 +34,14 @@ UI follows the My Pokedex by Jublia AI design system:
 
 Design tokens live in [`src/theme/design-tokens.scss`](src/theme/design-tokens.scss). To regenerate or extend the Figma file locally, see [`scripts/figma-design/README.md`](scripts/figma-design/README.md).
 
+### Screenshots
+
+Submission-ready app screenshots (mobile 390×844 and desktop 1280×900) are in [`docs/screenshots/`](docs/screenshots/). Regenerate with:
+
+```bash
+npm run e2e:screenshots
+```
+
 ## Documentation
 
 | Doc | Description |
@@ -80,6 +88,7 @@ Analyze bundles locally: `npm run analyze`
 | `npm test` | Karma unit/component tests (watch) |
 | `npm run test:ci` | Headless tests + 85% coverage gate (CI) |
 | `npm run e2e` | Playwright smoke tests (starts dev server) |
+| `npm run e2e:screenshots` | Capture submission screenshots → `docs/screenshots/` |
 | `npm run e2e:ui` | Playwright interactive UI |
 | `npm run lint` | ESLint (`src/**/*.ts`, `src/**/*.html`) |
 | `npm run analyze` | Bundle size report (`analyze-report.html`) |

@@ -15,6 +15,7 @@
     "test:ci": "ng test --configuration=ci --no-watch --browsers=ChromeHeadless",
     "e2e": "playwright test e2e/smoke.spec.ts",
     "e2e:visual": "playwright test e2e/visual.spec.ts",
+    "e2e:screenshots": "playwright test e2e/submission-screenshots.spec.ts",
     "e2e:ui": "playwright test --ui",
     "analyze": "ng build --configuration=development && source-map-explorer www/main.js www/vendor.js --html analyze-report.html",
     "lint": "ng lint",
