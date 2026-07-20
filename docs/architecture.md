@@ -168,7 +168,7 @@ The `httpInterceptor` (`src/app/core/interceptors/http.interceptor.ts`):
 
 ### Build output
 
-`ng build` writes to `www/`. Capacitor reads `webDir: 'www'` from `capacitor.config.ts`.
+`ng build` writes to `www/` (Angular puts the browser bundle in `www/browser/`). Capacitor reads `webDir: 'www/browser'` from `capacitor.config.ts`.
 
 ### App initializer
 

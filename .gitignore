@@ -23,6 +23,13 @@ log.txt
 /platforms
 /plugins
 
+# Capacitor / Xcode local build artifacts
+/ios/DerivedData
+/ios/SourcePackages
+/ios/App/App/public
+/android/app/build
+/android/.gradle
+
 # Compiled output
 /dist
 /tmp
@@ -75,3 +82,12 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Interview prep (personal — jangan ikut ke remote)
+/docs/Interview-Prep-Jublia-*.pdf
+/docs/interview-prep-jublia.html
+/docs/interview-prep-jublia-en.html
+/docs/candidate-profile.md
+/docs/submission-email.html
+/docs/screenshots/ios-simulator-demo.png
+/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.capacitor-default.png
